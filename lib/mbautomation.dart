@@ -1,5 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mbautomation/tracking/mb_automation_tracking_manager.dart';
+import 'package:mbautomation/triggers/mb_automation_messages_manager.dart';
+import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mburger/mb_plugin/mb_plugin.dart';
 
 class MBAutomation extends MBPlugin with WidgetsBindingObserver {
@@ -9,8 +11,8 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
     this.trackingEnabled: true,
     int eventsTimerTime: 10,
   }) {
-    //TODO: setup DB tables
-    //MBAutomationMessagesManager.startMessagesTimer(time: 30.0)
+    //TODO: setup DB tables for events & views
+    MBAutomationMessagesManager.startMessageTimer(time: 30);
     MBAutomationTrackingManager.shared.timerTime = eventsTimerTime;
     WidgetsBinding.instance.addObserver(this);
   }
@@ -36,22 +38,30 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   void messagesReceived(
     List<dynamic> messages,
     bool fromStartup,
-  ) {}
+  ) {
+    List<MBMessage> automationMessages = [];
+    for (dynamic message in messages) {
+      if (message is MBMessage) {
+        if (message.automationIsOn) {
+          automationMessages.add(message);
+        }
+      }
+    }
+  }
 
 //endregion
 
-  Future<void> trackScreenView() {}
+  Future<void> trackScreenView() async {}
 
   Future<void> sendEvent(
     String event, {
     String name,
     Map<String, dynamic> metadata,
-  }) {}
-
+  }) async {}
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      //TODO: MBAutomationMessagesManager.checkMessages
+      MBAutomationMessagesManager.checkMessages();
     }
   }
 }
