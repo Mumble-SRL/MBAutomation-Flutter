@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 enum MBTriggerType {
   location,
@@ -44,7 +44,7 @@ class MBTrigger {
     String id = dictionary['id'];
     String triggerTypeString = dictionary['type'];
     MBTriggerType triggerType =
-        MBTrigger._triggerTypeFromString(triggerTypeString);
+        MBTrigger.triggerTypeFromString(triggerTypeString);
     return MBTrigger(
       id: id,
       triggerType: triggerType,
@@ -80,7 +80,7 @@ class MBTrigger {
     return 'unknown';
   }
 
-  static MBTriggerType _triggerTypeFromString(String triggerTypeString) {
+  static MBTriggerType triggerTypeFromString(String triggerTypeString) {
     switch (triggerTypeString) {
       case 'location':
         return MBTriggerType.location;

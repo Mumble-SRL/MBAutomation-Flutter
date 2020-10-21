@@ -17,6 +17,7 @@ dependencies:
     path: ../mbmessages
   mbaudience:
     path: ../mbaudience
+  path_provider: ^1.6.21
 
 dev_dependencies:
   flutter_test:

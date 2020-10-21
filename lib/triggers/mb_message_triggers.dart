@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mbautomation/triggers/mb_automation_messages_manager.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
@@ -31,7 +31,7 @@ class MBMessageTriggers {
       List triggersDict = dictionary['triggers'];
       for (dynamic triggerDict in triggersDict) {
         if (triggerDict is Map<String, dynamic>) {
-          triggers.add(MBTrigger.fromDictionary(triggerDict));
+          triggers.add(MBAutomationMessagesManager.triggerFromDictionary(triggerDict));
         }
       }
     }
@@ -67,7 +67,7 @@ class MBMessageTriggers {
         List<Map<String, dynamic>> triggersDictionaries =
             dictionary['triggers'];
         triggers = triggersDictionaries
-            .map((t) => MBAutomationMessagesManager.triggerForDictionary(t))
+            .map((t) => MBAutomationMessagesManager.triggerFromJsonDictionary(t))
             .toList();
       }
     }

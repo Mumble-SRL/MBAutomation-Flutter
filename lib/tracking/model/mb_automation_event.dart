@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class MBAutomationEvent {
   final int id;

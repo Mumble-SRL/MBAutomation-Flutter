@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mbaudience/mbaudience.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 

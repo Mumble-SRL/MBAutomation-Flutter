@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
 class MBLocationTrigger extends MBTrigger {
@@ -134,7 +134,7 @@ class MBLocationTrigger extends MBTrigger {
     double radius = dictionary['radius'];
     int afterDays = dictionary['afterDays'];
 
-    MBLocationTrigger triggger = MBLocationTrigger(
+    MBLocationTrigger trigger = MBLocationTrigger(
       id: id,
       address: address,
       latitude: latitude,
@@ -144,10 +144,10 @@ class MBLocationTrigger extends MBTrigger {
     );
 
     if (dictionary['completionDate'] != null) {
-      triggger.completionDate = dictionary['completionDate'] * 1000;
+      trigger.completionDate = dictionary['completionDate'] * 1000;
     }
 
-    return triggger;
+    return trigger;
   }
 //endregion
 }

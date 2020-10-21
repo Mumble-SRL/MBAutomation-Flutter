@@ -97,7 +97,7 @@ class MBTagChangeTrigger extends MBTrigger {
     String value = dictionary['value'];
     String tagChangeOperatorString = dictionary['tagChangeOperator'];
 
-    MBTagChangeTrigger triggger = MBTagChangeTrigger(
+    MBTagChangeTrigger trigger = MBTagChangeTrigger(
       id: id,
       tag: tag,
       value: value,
@@ -105,10 +105,10 @@ class MBTagChangeTrigger extends MBTrigger {
     );
 
     if (dictionary['completionDate'] != null) {
-      triggger.completionDate = dictionary['completionDate'] * 1000;
+      trigger.completionDate = dictionary['completionDate'] * 1000;
     }
 
-    return triggger;
+    return trigger;
   }
 //endregion
 
