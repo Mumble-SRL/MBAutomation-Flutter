@@ -1,6 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
+enum MBTriggerChangedStatus {
+  unchanged,
+  valid,
+  invalid,
+}
+
 enum MBTagChangeOperator {
   equal,
   notEqual,
@@ -39,29 +45,29 @@ class MBTagChangeTrigger extends MBTrigger {
     );
   }
 
-  bool tagChanged(String tag, String value) {
-    //TODO: cancel notification?
-    // Instead of a bool return the new state: valid, invalid, unchanged
-    // valid = true
-    // invalid = [new] cancel local notif
-    // unchanged = do nothing
-
+  MBTriggerChangedStatus tagChanged(String tag, String value) {
     if (tag != this.tag) {
-      return false;
+      return MBTriggerChangedStatus.unchanged;
     }
     String newValue = value;
     if (tagChangeOperator == MBTagChangeOperator.equal) {
       if (newValue == this.value) {
         completionDate = DateTime.now();
-        return true;
+        return MBTriggerChangedStatus.valid;
+      } else {
+        completionDate = null;
+        return MBTriggerChangedStatus.invalid;
       }
     } else if (tagChangeOperator == MBTagChangeOperator.notEqual) {
       if (newValue != this.value) {
         completionDate = DateTime.now();
-        return true;
+        return MBTriggerChangedStatus.valid;
+      } else {
+        completionDate = null;
+        return MBTriggerChangedStatus.invalid;
       }
     }
-    return false;
+    return MBTriggerChangedStatus.unchanged;
   }
 
   @override
@@ -140,4 +146,17 @@ class MBTagChangeTrigger extends MBTrigger {
   }
 
 //endregion
+
+//region update trigger
+
+  @override
+  MBTrigger updatedTrigger(MBTrigger newTrigger) {
+    if (newTrigger is MBTagChangeTrigger) {
+      newTrigger.completionDate = completionDate;
+    }
+    return newTrigger;
+  }
+
+//endregion
+
 }

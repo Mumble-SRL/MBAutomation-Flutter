@@ -107,4 +107,14 @@ class MBTrigger {
     return MBTriggerType.unknown;
   }
 //endregion
+
+//region update trigger
+
+  /// Updates the trigger with the new infos
+  /// By defaults no action is don
+  MBTrigger updatedTrigger(MBTrigger newTrigger) {
+    return newTrigger;
+  }
+
+//endregion
 }

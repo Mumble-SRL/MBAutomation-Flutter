@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:mbautomation/tracking/mb_automation_tracking_manager.dart';
 import 'package:mbautomation/tracking/model/mb_automation_event.dart';
-import 'package:mbautomation/triggers/mb_automation_messages_manager.dart';
+import 'package:mbautomation/triggers/managers/mb_automation_messages_manager.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mburger/mb_plugin/mb_plugin.dart';
 
@@ -68,8 +68,10 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
         }
       }
     }
-    //TODO: uncomment
-    //MBAutomationMessagesManager.saveMessages(automationMessages, fromFetch: true)
+    MBAutomationMessagesManager.saveMessages(
+      automationMessages,
+      fromFetch: true,
+    );
     MBAutomationMessagesManager.checkMessages(fromStartup: fromStartup);
   }
 

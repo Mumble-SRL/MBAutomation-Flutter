@@ -49,7 +49,8 @@ class MBViewTrigger extends MBTrigger {
   }
 
   @override
-  Future<bool> isValid(bool fromAppStartup) async {
+  Future<bool>
+  isValid(bool fromAppStartup) async {
     if (completionDate == null) {
       return false;
     }
@@ -100,6 +101,19 @@ class MBViewTrigger extends MBTrigger {
 
     return trigger;
   }
+//endregion
+
+//region update trigger
+
+  @override
+  MBTrigger updatedTrigger(MBTrigger newTrigger) {
+    if (newTrigger is MBViewTrigger) {
+      newTrigger.numberOfTimes = numberOfTimes;
+      newTrigger.completionDate = completionDate;
+    }
+    return newTrigger;
+  }
+
 //endregion
 
 }

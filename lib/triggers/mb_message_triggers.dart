@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:mbautomation/triggers/mb_automation_messages_manager.dart';
+import 'package:mbautomation/triggers/managers/mb_automation_messages_manager.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
 enum MBMessageTriggersMethod {
@@ -31,7 +31,8 @@ class MBMessageTriggers {
       List triggersDict = dictionary['triggers'];
       for (dynamic triggerDict in triggersDict) {
         if (triggerDict is Map<String, dynamic>) {
-          triggers.add(MBAutomationMessagesManager.triggerFromDictionary(triggerDict));
+          triggers.add(
+              MBAutomationMessagesManager.triggerFromDictionary(triggerDict));
         }
       }
     }
@@ -67,7 +68,8 @@ class MBMessageTriggers {
         List<Map<String, dynamic>> triggersDictionaries =
             dictionary['triggers'];
         triggers = triggersDictionaries
-            .map((t) => MBAutomationMessagesManager.triggerFromJsonDictionary(t))
+            .map(
+                (t) => MBAutomationMessagesManager.triggerFromJsonDictionary(t))
             .toList();
       }
     }
@@ -83,6 +85,23 @@ class MBMessageTriggers {
     }
 
     return dictionary;
+  }
+
+  void updateTriggers(MBMessageTriggers newTriggers) {
+    List<MBTrigger> updatedTriggers = [];
+    for (MBTrigger newTrigger in newTriggers.triggers) {
+      MBTrigger trigger = triggers.firstWhere(
+        (t) => t.id == newTrigger.id,
+        orElse: () => null,
+      );
+      if (trigger != null) {
+        MBTrigger updatedTrigger = trigger.updatedTrigger(newTrigger);
+        updatedTriggers.add(updatedTrigger);
+      } else {
+        updatedTriggers.add(trigger);
+      }
+    }
+    this.triggers = updatedTriggers;
   }
 
 //region triggers method conversions
@@ -111,4 +130,5 @@ class MBMessageTriggers {
     return 'all';
   }
 //endregion
+
 }

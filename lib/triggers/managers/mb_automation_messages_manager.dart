@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:mbautomation/tracking/model/mb_automation_event.dart';
 import 'package:mbautomation/tracking/model/mb_automation_view.dart';
+import 'package:mbautomation/triggers/managers/mb_automation_messages_view_manager.dart';
 import 'package:mbautomation/triggers/mb_app_opening_trigger.dart';
 import 'package:mbautomation/triggers/mb_event_trigger.dart';
 import 'package:mbautomation/triggers/mb_inactive_user_trigger.dart';
@@ -112,31 +113,113 @@ class MBAutomationMessagesManager {
   }
 //endregion
 
-  static eventHappened(MBAutomationEvent event) {}
+  static eventHappened(MBAutomationEvent event) async {
+    List<MBMessage> messagesSaved = await savedMessages();
+    if (messagesSaved == null) {
+      return;
+    }
+    if (messagesSaved.length == 0) {
+      return;
+    }
 
-  static screenViewed(MBAutomationView view) {}
+    bool somethingChanged = false;
+    for (MBMessage message in messagesSaved) {
+      if (message.triggers is MBMessageTriggers) {
+        MBMessageTriggers messageTriggers = message.triggers;
+        if (messageTriggers.triggers != null) {
+          List<MBEventTrigger> eventsTriggers =
+              messageTriggers.triggers.where((t) => t is MBEventTrigger);
+          for (MBEventTrigger eventTrigger in eventsTriggers) {
+            bool triggerChanged = await eventTrigger.eventHappened(event);
+            if (triggerChanged) {
+              somethingChanged = true;
+            }
+          }
+        }
+      }
+    }
 
-  static tagChanged(String tag, String value) {}
+    if (somethingChanged) {
+      await saveMessages(
+        messagesSaved,
+        fromFetch: false,
+      );
+    }
+    checkMessages(fromStartup: false);
+  }
+
+  static Future<void> screenViewed(MBAutomationView view) async {
+    MBAutomationMessagesViewManager.shared.screenViewed(view);
+  }
+
+  static tagChanged(String tag, String value) {
+    //TODO: implement
+  }
 
   static locationDataUpdated(
     double latitude,
     double longitude,
-  ) {}
+  ) {
+    //TODO: implement
+  }
 
-  static _Location _lastLocation() {}
+  static _Location _lastLocation() {
+    //TODO: implement
+  }
 
-  static saveLocationAsLast(_Location location) {}
+  static saveLocationAsLast(_Location location) {
+    //TODO: implement
+  }
 
-  static void checkMessages({bool fromStartup}) {}
+  static void checkMessages({bool fromStartup}) {
+    //TODO: implement
+  }
 
 //endregion
 
 //region message saving
-  static Future<void> saveMessages() async {
+  static Future<void> saveMessages(
+    List<MBMessage> messages, {
+    bool fromFetch: false,
+  }) async {
     String path = await _messagesPath();
+    File f = File(path);
+    List<MBMessage> messagesSaved = await savedMessages();
+    List<MBMessage> messagesToSave = [];
+    if (fromFetch) {
+      for (MBMessage message in messages) {
+        MBMessage savedMessage = messagesSaved.firstWhere(
+          (m) => m.id == message.id,
+          orElse: () => null,
+        );
+        if (savedMessage == null) {
+          if (savedMessage.triggers != null && message.triggers != null) {
+            if (savedMessage.triggers is MBMessageTriggers &&
+                message.triggers is MBMessageTriggers) {
+              MBMessageTriggers savedTriggers = savedMessage.triggers;
+              MBMessageTriggers messageTriggers = message.triggers;
+              savedTriggers.updateTriggers(messageTriggers);
+            }
+          }
+          messagesToSave.add(savedMessage);
+        } else {
+          messagesToSave.add(message);
+        }
+      }
+    } else {
+      messagesToSave = messages;
+    }
+    List<Map<String, dynamic>> jsonDictionaries = messagesToSave
+        .map((m) => MBMessageSavingUtility.jsonDictionaryForMessage(m))
+        .toList();
+    String jsonString = json.encode(jsonDictionaries);
+    if (!(await f.exists())) {
+      await f.create(recursive: true);
+    }
+    await f.writeAsString(jsonString);
   }
 
-  static Future<List<MBMessage>> _savedMessages() async {
+  static Future<List<MBMessage>> savedMessages() async {
     String path = await _messagesPath();
     if (path == null) {
       return [];

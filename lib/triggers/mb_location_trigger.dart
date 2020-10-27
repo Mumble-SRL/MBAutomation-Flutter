@@ -150,4 +150,17 @@ class MBLocationTrigger extends MBTrigger {
     return trigger;
   }
 //endregion
+
+//region update trigger
+
+  @override
+  MBTrigger updatedTrigger(MBTrigger newTrigger) {
+    if (newTrigger is MBLocationTrigger) {
+      newTrigger.completionDate = completionDate;
+    }
+    return newTrigger;
+  }
+
+//endregion
+
 }

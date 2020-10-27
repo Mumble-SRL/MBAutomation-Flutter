@@ -122,4 +122,18 @@ class MBEventTrigger extends MBTrigger {
     return trigger;
   }
 //endregion
+
+//region update trigger
+
+  @override
+  MBTrigger updatedTrigger(MBTrigger newTrigger) {
+    if (newTrigger is MBEventTrigger) {
+      newTrigger.numberOfTimes = numberOfTimes;
+      newTrigger.completionDate = completionDate;
+    }
+    return newTrigger;
+  }
+
+//endregion
+
 }
