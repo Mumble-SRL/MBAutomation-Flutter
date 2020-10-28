@@ -15,6 +15,7 @@ class MBMessageSavingUtility {
       'startDate': message.startDate.millisecondsSinceEpoch ~/ 1000,
       'endDate': message.endDate.millisecondsSinceEpoch ~/ 1000,
       'automationIsOn': message.automationIsOn,
+      'sendAfterDays': message.sendAfterDays,
     };
 
     if (message.inAppMessage != null) {
@@ -51,6 +52,8 @@ class MBMessageSavingUtility {
     int endDateInt = jsonDictionary['endDate'];
     bool automationIsOn = jsonDictionary['automationIsOn'];
 
+    int sendAfterDays = jsonDictionary['sendAfterDays'];
+
     MBInAppMessage inAppMessage;
     MBPushMessage pushMessage;
     MBMessageTriggers triggers;
@@ -78,6 +81,7 @@ class MBMessageSavingUtility {
       automationIsOn: automationIsOn,
       inAppMessage: inAppMessage,
       pushMessage: pushMessage,
+      sendAfterDays: sendAfterDays,
       triggers: triggers,
     );
     return message;

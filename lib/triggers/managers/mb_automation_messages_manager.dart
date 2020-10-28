@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mbautomation/tracking/model/mb_automation_event.dart';
 import 'package:mbautomation/tracking/model/mb_automation_view.dart';
 import 'package:mbautomation/triggers/managers/mb_automation_messages_view_manager.dart';
+import 'package:mbautomation/triggers/managers/mb_automation_push_notifications_manager.dart';
 import 'package:mbautomation/triggers/mb_app_opening_trigger.dart';
 import 'package:mbautomation/triggers/mb_event_trigger.dart';
 import 'package:mbautomation/triggers/mb_inactive_user_trigger.dart';
@@ -15,8 +16,12 @@ import 'package:mbautomation/triggers/mb_tag_change_trigger.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 import 'package:mbautomation/triggers/mb_view_trigger.dart';
 import 'package:mbautomation/triggers/message_saving/mb_message_saving_utility.dart';
+import 'package:mbmessages/in_app_messages/mb_in_app_message_manager.dart';
+import 'package:mbmessages/mbmessages.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
+import 'package:mburger/mb_manager.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MBAutomationMessagesManager {
   static Timer timer;
@@ -152,27 +157,177 @@ class MBAutomationMessagesManager {
     MBAutomationMessagesViewManager.shared.screenViewed(view);
   }
 
-  static tagChanged(String tag, String value) {
-    //TODO: implement
+  static Future<void> tagChanged(String tag, String value) async {
+    List<MBMessage> messagesSaved = await savedMessages();
+    if (messagesSaved == null) {
+      return;
+    }
+    if (messagesSaved.length == 0) {
+      return;
+    }
+
+    bool somethingChanged = false;
+    for (MBMessage message in messagesSaved) {
+      if (message.triggers is MBMessageTriggers) {
+        MBMessageTriggers messageTriggers = message.triggers;
+        if (messageTriggers.triggers != null) {
+          List<MBTagChangeTrigger> tagTriggers =
+              messageTriggers.triggers.where((t) => t is MBTagChangeTrigger);
+          for (MBTagChangeTrigger tagTrigger in tagTriggers) {
+            MBTriggerChangedStatus result = tagTrigger.tagChanged(tag, value);
+            if (result != MBTriggerChangedStatus.unchanged) {
+              somethingChanged = true;
+            }
+
+            if (result == MBTriggerChangedStatus.invalid) {
+              if (message.messageType == MBMessageType.push &&
+                  (message.sendAfterDays ?? 0) != 0) {
+                MBAutomationPushNotificationsManager
+                    .cancelPushNotificationForMessage(message);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    if (somethingChanged) {
+      await saveMessages(
+        messagesSaved,
+        fromFetch: false,
+      );
+    }
+    checkMessages(fromStartup: false);
   }
 
-  static locationDataUpdated(
+  static Future<void> locationDataUpdated(
     double latitude,
     double longitude,
-  ) {
-    //TODO: implement
+  ) async {
+    List<MBMessage> messagesSaved = await savedMessages();
+    if (messagesSaved == null) {
+      return;
+    }
+    if (messagesSaved.length == 0) {
+      return;
+    }
+
+    _Location lastLocation = await _lastLocation();
+
+    bool somethingChanged = false;
+    for (MBMessage message in messagesSaved) {
+      if (message.triggers is MBMessageTriggers) {
+        MBMessageTriggers messageTriggers = message.triggers;
+        if (messageTriggers.triggers != null) {
+          List<MBLocationTrigger> locationTriggers =
+              messageTriggers.triggers.where((t) => t is MBLocationTrigger);
+          for (MBLocationTrigger locationTrigger in locationTriggers) {
+            bool triggerChanged = locationTrigger.locationDataUpdated(
+              latitude: latitude,
+              longitude: longitude,
+              lastLatitude: lastLocation?.latitude,
+              lastLongitude: lastLocation?.longitude,
+            );
+            if (triggerChanged) {
+              somethingChanged = true;
+            }
+          }
+        }
+      }
+    }
+
+    if (somethingChanged) {
+      await saveMessages(
+        messagesSaved,
+        fromFetch: false,
+      );
+    }
+    checkMessages(fromStartup: false);
+    await _saveLocationAsLast(_Location(
+      latitude,
+      longitude,
+    ));
   }
 
-  static _Location _lastLocation() {
-    //TODO: implement
+  static Future<_Location> _lastLocation() async {
+    String lastLocationLatKey =
+        'com.mumble.mburger.automation.lastLocation.lat';
+    String lastLocationLngKey =
+        'com.mumble.mburger.automation.lastLocation.lng';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double lat = prefs.getDouble(lastLocationLatKey);
+    double lng = prefs.getDouble(lastLocationLngKey);
+    if (lat != null && lng != null) {
+      return _Location(lat, lng);
+    }
+    return null;
   }
 
-  static saveLocationAsLast(_Location location) {
-    //TODO: implement
+  static Future<void> _saveLocationAsLast(_Location location) async {
+    String lastLocationLatKey =
+        'com.mumble.mburger.automation.lastLocation.lat';
+    String lastLocationLngKey =
+        'com.mumble.mburger.automation.lastLocation.lng';
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    double lat = location?.latitude;
+    double lng = location?.longitude;
+    if (lat != null && lng != null && lat != 0 && lng != 0) {
+      await prefs.setDouble(lastLocationLatKey, lat);
+      await prefs.setDouble(lastLocationLngKey, lng);
+    } else {
+      await prefs.remove(lastLocationLatKey);
+      await prefs.remove(lastLocationLngKey);
+    }
   }
 
-  static void checkMessages({bool fromStartup}) {
-    //TODO: implement
+  static Future<void> checkMessages({bool fromStartup}) async {
+    List<MBMessage> messagesSaved = await savedMessages();
+    if (messagesSaved == null) {
+      return;
+    }
+    if (messagesSaved.length == 0) {
+      return;
+    }
+    List<MBMessage> messagesToShow = [];
+    for (MBMessage message in messagesSaved) {
+      if (message.triggers != null) {
+        if (message.triggers is MBMessageTriggers) {
+          MBMessageTriggers messageTriggers = message.triggers;
+          bool triggerIsValid =
+              await messageTriggers.isValid(fromStartup) ?? false;
+          if (triggerIsValid) {
+            messagesToShow.add(message);
+          }
+        }
+      }
+    }
+
+    if (messagesToShow.length != 0) {
+      List<MBMessage> inAppMessages = messagesToShow
+          .where((m) =>
+              m.messageType == MBMessageType.inAppMessage &&
+              m.inAppMessage != null)
+          .toList();
+      List<MBMessage> pushMessages = messagesToShow
+          .where((m) =>
+              m.messageType == MBMessageType.push && m.pushMessage != null)
+          .toList();
+      if (inAppMessages.length != 0) {
+        MBMessages plugin = MBManager.shared.pluginOf<MBMessages>();
+        if (plugin != null) {
+          MBInAppMessageManager.presentMessages(
+            messages: inAppMessages,
+            ignoreShowedMessages: plugin.debug,
+            themeForMessage: plugin.themeForMessage,
+            onButtonPressed: plugin.onButtonPressed,
+          );
+        }
+      }
+      if (pushMessages.length != 0) {
+        MBAutomationPushNotificationsManager.showPushNotifications(
+            pushMessages);
+      }
+    }
   }
 
 //endregion

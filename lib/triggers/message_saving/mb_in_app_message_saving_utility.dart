@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 
@@ -36,7 +38,63 @@ class MBInAppMessageSavingUtility {
 
   static MBInAppMessage inAppMessageFromJsonDictionary(
       Map<String, dynamic> jsonDictionary) {
-    //TODO:
+    int id = jsonDictionary['id'];
+    String styleString = jsonDictionary['style'];
+    double duration = jsonDictionary['duration'];
+
+    String title = jsonDictionary['title'];
+    int titleColor = jsonDictionary['titleColor'];
+
+    String body = jsonDictionary['body'];
+    int bodyColor = jsonDictionary['bodyColor'];
+
+    String image = jsonDictionary['image'];
+
+    int backgroundColor = jsonDictionary['backgroundColor'];
+
+    List<MBInAppMessageButton> buttons;
+    if (jsonDictionary['buttons'] != null) {
+      buttons = [];
+      List<Map<String, dynamic>> buttonsDictionaries =
+          List.castFrom<dynamic, Map<String, dynamic>>(
+              jsonDictionary['buttons']);
+      for (Map<String, dynamic> buttonDictionary in buttonsDictionaries) {
+        buttons.add(
+            MBInAppMessageSavingUtility._inAppMessageButtonFromJsonDictionary(
+                buttonDictionary));
+      }
+    }
+
+    return MBInAppMessage(
+      id: id,
+      style: _inAppMessageStyleForString(styleString),
+      duration: duration,
+      title: title,
+      titleColor: Color(titleColor),
+      body: body,
+      bodyColor: Color(bodyColor),
+      image: image,
+      backgroundColor: Color(backgroundColor),
+      buttons: buttons,
+    );
+  }
+
+  static MBInAppMessageStyle _inAppMessageStyleForString(String styleString) {
+    switch (styleString) {
+      case 'banner_top':
+        return MBInAppMessageStyle.bannerTop;
+        break;
+      case 'banner_bottom':
+        return MBInAppMessageStyle.bannerBottom;
+        break;
+      case 'center':
+        return MBInAppMessageStyle.center;
+        break;
+      case 'fullscreen_image':
+        return MBInAppMessageStyle.fullscreenImage;
+        break;
+    }
+    return MBInAppMessageStyle.bannerTop;
   }
 
   static String _stringForInAppMessageStyle(
@@ -72,6 +130,23 @@ class MBInAppMessageSavingUtility {
       dictionary['backgroundColor'] = button.backgroundColor.value;
     }
     return dictionary;
+  }
+
+  static MBInAppMessageButton _inAppMessageButtonFromJsonDictionary(
+      Map<String, dynamic> jsonDictionary) {
+    String title = jsonDictionary['title'];
+    String link = jsonDictionary['link'];
+    String linkType = jsonDictionary['linkType'];
+    int titleColor = jsonDictionary['titleColor'];
+    int backgroundColor = jsonDictionary['backgroundColor'];
+
+    return MBInAppMessageButton(
+      title: title,
+      titleColor: Color(titleColor),
+      backgroundColor: Color(backgroundColor),
+      link: link,
+      linkTypeString: linkType,
+    );
   }
 
   static String _stringForLinkType(MBInAppMessageButtonLinkType linkType) {

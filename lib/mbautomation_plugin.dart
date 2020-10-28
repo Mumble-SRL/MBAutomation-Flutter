@@ -1,14 +1,35 @@
-
-import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 class MBAutomationFlutterPlugin {
-  static const MethodChannel _channel =
-      const MethodChannel('mbautomation');
+  static const MethodChannel _channel = const MethodChannel('mbautomation');
 
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
+  static Future<bool> showLocalNotification({
+    @required String id,
+    @required DateTime date,
+    @required String title,
+    @required String body,
+    @required int badge,
+    @required launchImage,
+    @required sound,
+    @required media,
+    @required mediaType,
+  }) async {
+    bool result = await _channel.invokeMethod('showNotification', {
+      'id': id,
+      'date': date,
+      'title': title,
+      'body': body,
+      'badge': badge,
+      'launchImage': launchImage,
+      'sound': sound,
+      'media': media,
+      'mediaType': mediaType,
+    });
+    return result ?? false;
+  }
+
+  static Future<void> cancelLocalNotification({@required String id}) async {
+    await _channel.invokeMethod('cancelNotification', {'id': id});
   }
 }

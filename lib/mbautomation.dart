@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
+import 'package:mbautomation/tracking/db/mb_automation_database.dart';
 import 'package:mbautomation/tracking/mb_automation_tracking_manager.dart';
 import 'package:mbautomation/tracking/model/mb_automation_event.dart';
+import 'package:mbautomation/tracking/model/mb_automation_view.dart';
 import 'package:mbautomation/triggers/managers/mb_automation_messages_manager.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mburger/mb_plugin/mb_plugin.dart';
@@ -21,7 +23,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
     this.trackingEnabled: true,
     int eventsTimerTime: 10,
   }) {
-    //TODO: setup DB tables for events & views
+    MBAutomationDatabase.initDb();
     MBAutomationMessagesManager.startMessageTimer(time: 30);
     _eventsTimerTime = eventsTimerTime;
     MBAutomationTrackingManager.shared.timerTime = eventsTimerTime;
@@ -77,12 +79,17 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
 
 //endregion
 
-  Future<void> trackScreenView() async {
-    //TODO: uncomment
-    //MBAutomationViewTracking.trackViewForViewController(viewController: viewController)
+  static Future<void> trackScreenView(
+    String view,
+    Map<String, dynamic> metadata,
+  ) async {
+    MBAutomationView automationView =
+        MBAutomationView(view: view, metadata: metadata);
+    MBAutomationMessagesManager.screenViewed(automationView);
+    MBAutomationTrackingManager.shared.trackView(automationView);
   }
 
-  Future<void> sendEvent(
+  static Future<void> sendEvent(
     String event, {
     String name,
     Map<String, dynamic> metadata,
@@ -93,8 +100,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
       metadata: metadata,
     );
     MBAutomationMessagesManager.eventHappened(automationEvent);
-    //TODO: uncomment
-    //MBAutomationTrackingManager.shared.trackEvent(event)
+    MBAutomationTrackingManager.shared.trackEvent(automationEvent);
   }
 
   void didChangeAppLifecycleState(AppLifecycleState state) {
