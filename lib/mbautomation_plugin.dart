@@ -1,5 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:mpush/mp_android_notifications_settings.dart';
+import 'package:mbmessages/push_notifications/mbpush.dart';
 
 class MBAutomationFlutterPlugin {
   static const MethodChannel _channel = const MethodChannel('mbautomation');
@@ -15,8 +19,12 @@ class MBAutomationFlutterPlugin {
     @required media,
     @required mediaType,
   }) async {
-    MBMessages messages =
-    bool result = await _channel.invokeMethod('showNotification', {
+    MPAndroidNotificationsSettings androidNotificationsSettings =
+        MBPush.androidPushNotificationsSettings;
+    if (Platform.isAndroid && androidNotificationsSettings == null) {
+      return false;
+    }
+    Map<String, dynamic> arguments = {
       'id': id,
       'date': date.millisecondsSinceEpoch ~/ 1000,
       'title': title,
@@ -26,7 +34,13 @@ class MBAutomationFlutterPlugin {
       'sound': sound,
       'media': media,
       'mediaType': mediaType,
-    });
+      'channelId': androidNotificationsSettings?.channelId,
+      'channelName': androidNotificationsSettings?.channelName,
+      'channelDescription': androidNotificationsSettings?.channelDescription,
+      'icon': androidNotificationsSettings?.icon,
+    };
+    arguments.addAll(androidNotificationsSettings.toMethodChannelArguments());
+    bool result = await _channel.invokeMethod('showNotification', arguments);
     return result ?? false;
   }
 
