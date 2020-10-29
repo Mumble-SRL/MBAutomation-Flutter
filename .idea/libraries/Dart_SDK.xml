@@ -1,17 +1,27 @@
 <component name="libraryTable">
   <library name="Dart SDK">
     <CLASSES>
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/async" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/collection" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/convert" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/core" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/developer" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/html" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/io" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/isolate" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/math" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/mirrors" />
-      <root url="file:///Users/lorenzooliveto/Flutter/flutter/bin/cache/dart-sdk/lib/typed_data" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/async" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/cli" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/collection" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/convert" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/core" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/developer" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/ffi" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/html" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/indexed_db" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/io" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/isolate" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/js" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/js_util" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/math" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/mirrors" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/svg" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/typed_data" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/wasm" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/web_audio" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/web_gl" />
+      <root url="file://$USER_HOME$/DART-SDK/lib/web_sql" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
