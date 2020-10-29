@@ -15,9 +15,10 @@ class MBAutomationFlutterPlugin {
     @required media,
     @required mediaType,
   }) async {
+    MBMessages messages =
     bool result = await _channel.invokeMethod('showNotification', {
       'id': id,
-      'date': date,
+      'date': date.millisecondsSinceEpoch ~/ 1000,
       'title': title,
       'body': body,
       'badge': badge,

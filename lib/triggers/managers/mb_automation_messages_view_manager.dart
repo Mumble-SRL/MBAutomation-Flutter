@@ -77,7 +77,11 @@ class MBAutomationMessagesViewManager {
         MBTrigger trigger = messageTriggers.triggers[triggerIndex];
         if (trigger is MBViewTrigger) {
           trigger.setCompleted();
-          MBAutomationMessagesManager.checkMessages(fromStartup: false);
+          await MBAutomationMessagesManager.saveMessages(
+            messagesSaved,
+            fromFetch: false,
+          );
+          await MBAutomationMessagesManager.checkMessages(fromStartup: false);
         }
       }
     }
