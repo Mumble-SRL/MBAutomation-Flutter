@@ -23,7 +23,7 @@ public class SwiftMbautomationPlugin: NSObject, FlutterPlugin {
             return;
         }
         
-        guard let id = arguments["id"] as? String,
+        guard let id = arguments["id"] as? Int,
               let timestamp = arguments["date"] as? Int else {
             result(false)
             return;
@@ -36,7 +36,6 @@ public class SwiftMbautomationPlugin: NSObject, FlutterPlugin {
                     return
                 }
                 
-                var needsToDownloadMedia = false
                 let content = UNMutableNotificationContent()
                 
                 content.title = arguments["title"] as? String ?? ""
@@ -81,13 +80,13 @@ public class SwiftMbautomationPlugin: NSObject, FlutterPlugin {
     }
     
     @available(iOS 10.0, *)
-    private func sendPush(id: String,
+    private func sendPush(id: Int,
                           date: Date,
                           content: UNNotificationContent,
                           result: @escaping FlutterResult) {
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.getPendingNotificationRequests { requests in
-            let existingRequest = requests.first(where: { $0.identifier == id })
+            let existingRequest = requests.first(where: { $0.identifier == String(id) })
             guard existingRequest == nil else { // If I have already a request don't schedule another
                 result(true)
                 return
@@ -95,7 +94,7 @@ public class SwiftMbautomationPlugin: NSObject, FlutterPlugin {
             
             let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: abs(date.timeIntervalSinceNow), repeats: false)
             
-            let request = UNNotificationRequest(identifier: id,
+            let request = UNNotificationRequest(identifier: String(id),
                                                 content: content,
                                                 trigger: trigger)
 
@@ -116,14 +115,14 @@ public class SwiftMbautomationPlugin: NSObject, FlutterPlugin {
             result(false)
             return;
         }
-        guard let id = arguments["id"] as? String else {
+        guard let id = arguments["id"] as? Int else {
             result(false)
             return;
         }
         
         if #available(iOS 10.0, *) {
             let notificationCenter = UNUserNotificationCenter.current()
-            notificationCenter.removePendingNotificationRequests(withIdentifiers: [id])
+            notificationCenter.removePendingNotificationRequests(withIdentifiers: [String(id)])
             result(true)
         } else {
             //TODO: implement for older version if supported
