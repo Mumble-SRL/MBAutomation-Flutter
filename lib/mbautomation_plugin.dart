@@ -25,7 +25,7 @@ class MBAutomationFlutterPlugin {
       return false;
     }
     Map<String, dynamic> arguments = {
-      'id': id,
+      'id': id.hashCode,
       'date': date.millisecondsSinceEpoch ~/ 1000,
       'title': title,
       'body': body,
@@ -45,6 +45,6 @@ class MBAutomationFlutterPlugin {
   }
 
   static Future<void> cancelLocalNotification({@required String id}) async {
-    await _channel.invokeMethod('cancelNotification', {'id': id});
+    await _channel.invokeMethod('cancelNotification', {'id': id.hashCode});
   }
 }
