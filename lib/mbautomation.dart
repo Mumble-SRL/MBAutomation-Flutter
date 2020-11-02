@@ -26,6 +26,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
     MBAutomationDatabase.initDb();
     MBAutomationMessagesManager.startMessageTimer(time: 30);
     _eventsTimerTime = eventsTimerTime;
+    MBAutomationFlutterPlugin.initializeMethodCall();
     MBAutomationTrackingManager.shared.timerTime = eventsTimerTime;
     WidgetsBinding.instance.addObserver(this);
   }

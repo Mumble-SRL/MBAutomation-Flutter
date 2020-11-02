@@ -173,10 +173,10 @@ packages:
   mpush:
     dependency: transitive
     description:
-      name: mpush
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.1+2"
+      path: "../../mpush"
+      relative: true
+    source: path
+    version: "0.0.1+3"
   package_info:
     dependency: transitive
     description:

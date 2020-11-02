@@ -4,9 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mpush/mp_android_notifications_settings.dart';
 import 'package:mbmessages/push_notifications/mbpush.dart';
+import 'package:mpush/mpush.dart';
+import 'dart:convert';
 
 class MBAutomationFlutterPlugin {
   static const MethodChannel _channel = const MethodChannel('mbautomation');
+
+  //TODO: init callbacks
 
   static Future<bool> showLocalNotification({
     @required String id,
@@ -47,4 +51,45 @@ class MBAutomationFlutterPlugin {
   static Future<void> cancelLocalNotification({@required String id}) async {
     await _channel.invokeMethod('cancelNotification', {'id': id.hashCode});
   }
+
+  /// If method call has been initialized or not
+  static bool _methodCallInitialized = false;
+
+  static initializeMethodCall() {
+    if (!_methodCallInitialized) {
+      _methodCallInitialized = true;
+      _channel.setMethodCallHandler(_mbAutomationHandler);
+    }
+  }
+
+  static Future<dynamic> _mbAutomationHandler(MethodCall methodCall) async {
+    switch (methodCall.method) {
+      case 'pushArrived':
+        Function(Map<String, dynamic>) onNotificationArrival = MPush.onNotificationArrival;
+        if (onNotificationArrival != null) {
+          if (methodCall.arguments is Map<String, dynamic>) {
+            onNotificationArrival(methodCall.arguments);
+          } else if (methodCall.arguments is String) {
+            Map<String, dynamic> map = json.decode(methodCall.arguments);
+            onNotificationArrival(map);
+          }
+        }
+        break;
+      case 'pushTapped':
+        Function(Map<String, dynamic>) onNotificationTap = MPush.onNotificationTap;
+        if (onNotificationTap != null) {
+          if (methodCall.arguments is Map<String, dynamic>) {
+            onNotificationTap(methodCall.arguments);
+          } else if (methodCall.arguments is String) {
+            Map<String, dynamic> map = json.decode(methodCall.arguments);
+            onNotificationTap(map);
+          }
+        }
+        break;
+      default:
+        print('${methodCall.method} not implemented');
+        return;
+    }
+  }
+
 }
