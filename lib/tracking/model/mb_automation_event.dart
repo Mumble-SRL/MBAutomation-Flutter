@@ -1,14 +1,27 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 
+/// An event of MBAutomation.
 class MBAutomationEvent {
+  /// The id of the event.
   final int id;
+
+  /// The event name.
   final String event;
+
+  /// The name of the event.
   final String name;
+
+  /// Additional metadata for the event.
   final Map<String, dynamic> metadata;
+
+  /// Timestamp of the event.
   final DateTime timestamp;
 
+  /// Initializes an event with the parameters passed. Timestamp is set with `DateTime.now()`.
+  /// @param event The name of the event.
+  /// @param name The name of the event.
+  /// @param metadata Additional metadata for the event.
   MBAutomationEvent({
     @required this.event,
     this.name,
@@ -16,6 +29,7 @@ class MBAutomationEvent {
   })  : id = null,
         timestamp = DateTime.now();
 
+  /// Initializes an event with all the data. Used when initializing the event from DB data.
   MBAutomationEvent._withAllData({
     @required this.id,
     @required this.event,
@@ -24,6 +38,8 @@ class MBAutomationEvent {
     @required this.timestamp,
   });
 
+  /// Initializes an event with the `Map` retrieved from the DB.
+  /// @param dbData data retrieved from the DB.
   factory MBAutomationEvent.fromDbData({
     @required Map<String, dynamic> dbData,
   }) {
@@ -50,6 +66,7 @@ class MBAutomationEvent {
     );
   }
 
+  /// Converts this event to a `Map` to save it in the DB.
   Map<String, dynamic> toDbDictionary() {
     Map<String, dynamic> dictionary = {
       'event': event,
@@ -63,6 +80,7 @@ class MBAutomationEvent {
     return dictionary;
   }
 
+  /// Converts this event to a `Map` to send it with MBurger APIs.
   Map<String, dynamic> toApiDictionary() {
     Map<String, dynamic> dictionary = {
       'event': event,

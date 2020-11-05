@@ -1,19 +1,30 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 
+/// A view of MBAutomation.
 class MBAutomationView {
+  /// The id of the view.
   final int id;
+
+  /// The view name.
   final String view;
+
+  /// Additional metadata for the view.
   final Map<String, dynamic> metadata;
+
+  /// Timestamp of the view.
   final DateTime timestamp;
 
+  /// Initializes a view with the parameters passed. Timestamp is set with `DateTime.now()`.
+  /// @param view The name of the view.
+  /// @param metadata Additional metadata for the view.
   MBAutomationView({
     @required this.view,
     this.metadata,
   })  : id = null,
         timestamp = DateTime.now();
 
+  /// Initializes a view with all the data. Used when initializing the view from DB data.
   MBAutomationView._withAllData({
     @required this.id,
     @required this.view,
@@ -21,6 +32,8 @@ class MBAutomationView {
     @required this.timestamp,
   });
 
+  /// Initializes a view with the `Map` retrieved from the DB.
+  /// @param dbData data retrieved from the DB.
   factory MBAutomationView.fromDbData({
     @required Map<String, dynamic> dbData,
   }) {
@@ -45,6 +58,7 @@ class MBAutomationView {
     );
   }
 
+  /// Converts this view to a `Map` to save it in the DB.
   Map<String, dynamic> toDbDictionary() {
     Map<String, dynamic> dictionary = {
       'view': view,
@@ -56,6 +70,7 @@ class MBAutomationView {
     return dictionary;
   }
 
+  /// Converts this view to a `Map` to send it with MBurger APIs.
   Map<String, dynamic> toApiDictionary() {
     Map<String, dynamic> dictionary = {
       'view': view,

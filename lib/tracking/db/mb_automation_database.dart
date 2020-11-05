@@ -6,11 +6,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+/// The class that manages the automation DB that stores views and events tracked.
 class MBAutomationDatabase {
+  /// Initializes the DB and tables.
   static Future<void> initDb() async {
     await _database();
   }
 
+  /// Opens and returns the database
+  /// @returns An instance of a Database.
   static Future<Database> _database() async {
     String path = await _dbPath();
     Database db = await openDatabase(
@@ -21,6 +25,9 @@ class MBAutomationDatabase {
     return db;
   }
 
+  /// Function called when the database is created, it creates the tables for views and  events
+  /// @param db The database.
+  /// @param version The version of the database.
   static void _onCreate(Database db, int version) async {
     await db.execute(
       'CREATE TABLE IF NOT EXISTS view '
@@ -41,6 +48,8 @@ class MBAutomationDatabase {
 
 //region view
 
+  /// Saves a view in the DB.
+  /// @param view The view to save.
   static Future<void> saveView(MBAutomationView view) async {
     Database db = await _database();
     await db.insert(
@@ -49,6 +58,8 @@ class MBAutomationDatabase {
     );
   }
 
+  /// Fetches the views saved in the DB.
+  /// @returns A Future that completes whit the views retrieved from the DB.
   static Future<List<MBAutomationView>> views() async {
     Database db = await _database();
     final res = await db.query(
@@ -61,6 +72,8 @@ class MBAutomationDatabase {
     return null;
   }
 
+  /// Deletes the views from the DB.
+  /// @param views An array of views to delete.
   static Future<void> deleteViews(List<MBAutomationView> views) async {
     Database db = await _database();
     String viewIds = views.map((e) => e.id).toList().join(',');
@@ -71,6 +84,8 @@ class MBAutomationDatabase {
 
 //region event
 
+  /// Saves an event in the DB.
+  /// @param event The event to save.
   static Future<void> saveEvent(MBAutomationEvent event) async {
     Database db = await _database();
     await db.insert(
@@ -79,6 +94,8 @@ class MBAutomationDatabase {
     );
   }
 
+  /// Fetches the events saved in the DB.
+  /// @returns A Future that completes whit the events retrieved from the DB.
   static Future<List<MBAutomationEvent>> events() async {
     Database db = await _database();
     final res = await db.query(
@@ -91,6 +108,8 @@ class MBAutomationDatabase {
     return null;
   }
 
+  /// Deletes the events from the DB.
+  /// @param views An array of events to delete.
   static Future<void> deleteEvents(List<MBAutomationEvent> events) async {
     Database db = await _database();
     String eventsIds = events.map((e) => e.id).toList().join(',');
@@ -99,6 +118,7 @@ class MBAutomationDatabase {
 
 //endregion
 
+  /// The path for the Database.
   static Future<String> _dbPath() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, "mb_automation_db_f.sqlite");
