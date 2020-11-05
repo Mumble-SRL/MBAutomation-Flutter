@@ -5,7 +5,11 @@ import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mbmessages/push_notifications/mbpush_message.dart';
 
+/// Utility class to save messages as JSONs
 class MBMessageSavingUtility {
+  /// Converts a message to a JSON map
+  /// @param message The message to convert.
+  /// @returns The JSON representation of the message.
   static Map<String, dynamic> jsonDictionaryForMessage(MBMessage message) {
     Map<String, dynamic> dictionary = {
       'id': message.id,
@@ -40,6 +44,9 @@ class MBMessageSavingUtility {
     return dictionary;
   }
 
+  /// Creates and initializes a `MBMessage` from a JSON dictionary.
+  /// @param jsonDictionary The JSON dictionary to convert.
+  /// @returns The message created with the data of the JSON.
   static MBMessage messageFromJsonDictionary(
       Map<String, dynamic> jsonDictionary) {
     int id = jsonDictionary['id'];
@@ -87,6 +94,9 @@ class MBMessageSavingUtility {
     return message;
   }
 
+  /// Converts the type of message to a string.
+  /// @param messageType The message type to convert.
+  /// @returns The string representation of the message type.
   static String _stringForMessageType(MBMessageType messageType) {
     if (messageType == MBMessageType.inAppMessage) {
       return 'in_app';
@@ -96,6 +106,9 @@ class MBMessageSavingUtility {
     return 'in_app';
   }
 
+  /// Converts a string to a `MBMessageType`.
+  /// @param messageTypeString The string to convert.
+  /// @returns The MBMessageType, if the string doesn't match it returns `MBMessageType.inAppMessage`.
   static MBMessageType _messageTypeForString(String messageTypeString) {
     if (messageTypeString == 'in_app') {
       return MBMessageType.inAppMessage;

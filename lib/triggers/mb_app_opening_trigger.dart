@@ -2,9 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:mbaudience/mbaudience.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
+/// An app opening trigger that becomes true once the user has opened the app n times.
 class MBAppOpeningTrigger extends MBTrigger {
+  /// The number of times the user needs to open the app.
   final int times;
 
+  /// Initializes an app opening trigger with the data provided.
   MBAppOpeningTrigger({
     @required String id,
     @required this.times,
@@ -13,6 +16,7 @@ class MBAppOpeningTrigger extends MBTrigger {
           triggerType: MBTriggerType.appOpening,
         );
 
+  /// Initializes an app opening trigger with the data of the dictionary returned by the APIs.
   factory MBAppOpeningTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'];
     int times = dictionary['times'] ?? 0;
@@ -20,6 +24,9 @@ class MBAppOpeningTrigger extends MBTrigger {
     return MBAppOpeningTrigger(id: id, times: times);
   }
 
+  /// If the trigger is valid or not.
+  /// @param fromAppStartup If the check has been triggered at the app startup
+  /// @returns If the trigger is valid or not.s
   @override
   Future<bool> isValid(bool fromAppStartup) async {
     if (!fromAppStartup) {

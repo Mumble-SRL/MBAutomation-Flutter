@@ -2,16 +2,24 @@ import 'package:mbautomation/tracking/model/mb_automation_event.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 import 'package:flutter/foundation.dart';
 
+/// An event opening trigger that becomes true if an event happens.
 class MBEventTrigger extends MBTrigger {
+  /// The event that needs to happen.
   final String event;
 
+  /// The number of times the event needs to happen.
   final int times;
 
+  /// Metadata associated with the event.
   final Map<String, dynamic> metadata;
 
+  /// If the trigger has been completed this var will have the date the event has been completed.
   DateTime completionDate;
+
+  /// Counter to keeps track of how many times an event has happened.
   int numberOfTimes;
 
+  /// Initializes an event trigger with the data provided.
   MBEventTrigger({
     @required String id,
     @required this.event,
@@ -22,6 +30,7 @@ class MBEventTrigger extends MBTrigger {
           triggerType: MBTriggerType.event,
         );
 
+  /// Initializes an event trigger with the data of the dictionary returned by the APIs.
   factory MBEventTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
     String event = dictionary['event_name'] ?? '';
@@ -37,8 +46,9 @@ class MBEventTrigger extends MBTrigger {
     );
   }
 
-  /// Function called when an event happen
-  /// - Returns: If the trigger has changed
+  /// Function called when an event happen.
+  /// @param event The event that happened.
+  /// @returns If the trigger has changed.
   Future<bool> eventHappened(MBAutomationEvent event) async {
     if (event.event != this.event) {
       return false;
@@ -71,6 +81,9 @@ class MBEventTrigger extends MBTrigger {
     }
   }
 
+  /// If the trigger is valid or not.
+  /// @param fromAppStartup If the check has been triggered at the app startup
+  /// @returns If the trigger is valid or not.
   @override
   Future<bool> isValid(bool fromAppStartup) async {
     if (completionDate == null) {

@@ -1,9 +1,12 @@
 import 'dart:ui';
-
 import 'package:mbmessages/in_app_messages/mb_in_app_message.dart';
 import 'package:mbmessages/in_app_messages/mb_in_app_message_button.dart';
 
+/// Utility class to convert in app messages to JSON and initialize a message from a JSON
 class MBInAppMessageSavingUtility {
+  /// Converts an in app message to a JSON dictionary
+  /// @param inAppMessage The in app message to convert.
+  /// @returns The Map that represent the in app message.
   static Map<String, dynamic> jsonDictionaryForInAppMessage(
       MBInAppMessage inAppMessage) {
     Map<String, dynamic> dictionary = {
@@ -36,6 +39,9 @@ class MBInAppMessageSavingUtility {
     return dictionary;
   }
 
+  /// Creates and initializes an in app message object from a JSON object.
+  /// @param jsonDictionary The dictionary from the JSON.
+  /// @returns The in app message created.
   static MBInAppMessage inAppMessageFromJsonDictionary(
       Map<String, dynamic> jsonDictionary) {
     int id = jsonDictionary['id'];
@@ -79,6 +85,9 @@ class MBInAppMessageSavingUtility {
     );
   }
 
+  /// Converts the string represent the in app message style to the corresponding enum.
+  /// @param styleString The string that represent the in app message style.
+  /// @returns The corresponding `MBInAppMessageStyle`.
   static MBInAppMessageStyle _inAppMessageStyleForString(String styleString) {
     switch (styleString) {
       case 'banner_top':
@@ -97,6 +106,9 @@ class MBInAppMessageSavingUtility {
     return MBInAppMessageStyle.bannerTop;
   }
 
+  /// Converts a `MBInAppMessageStyle` to a string, to save it as JSON.
+  /// @param inAppMessageStyle The message style that will be converted.
+  /// @returns The striing representation.
   static String _stringForInAppMessageStyle(
       MBInAppMessageStyle inAppMessageStyle) {
     switch (inAppMessageStyle) {
@@ -116,6 +128,9 @@ class MBInAppMessageSavingUtility {
     return 'banner_top';
   }
 
+  /// Converts a `MBInAppMessageButton` to save it in a JSON.
+  /// @param button The `MBInAppMessageButton` to convert.
+  /// @returns The JSON representation of the in app message button.
   static Map<String, dynamic> _jsonDictionaryForButton(
       MBInAppMessageButton button) {
     Map<String, dynamic> dictionary = {
@@ -132,6 +147,9 @@ class MBInAppMessageSavingUtility {
     return dictionary;
   }
 
+  /// Creates and initializes a `MBInAppMessageButton` from a JSON map.
+  /// @param jsonDictionary The JSON representation of the in app message button.
+  /// @returns The `MBInAppMessageButton` created.
   static MBInAppMessageButton _inAppMessageButtonFromJsonDictionary(
       Map<String, dynamic> jsonDictionary) {
     String title = jsonDictionary['title'];
@@ -149,6 +167,9 @@ class MBInAppMessageSavingUtility {
     );
   }
 
+  /// Converts a `MBInAppMessageButtonLinkType` to a string, to save it as JSON.
+  /// @param linkType The link type to convert.
+  /// @returns The string representation of the link type.
   static String _stringForLinkType(MBInAppMessageButtonLinkType linkType) {
     switch (linkType) {
       case MBInAppMessageButtonLinkType.link:

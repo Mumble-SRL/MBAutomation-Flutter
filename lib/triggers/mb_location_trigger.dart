@@ -3,16 +3,27 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
+/// A location trigger that becomes true when the user visits a location, specified by lat, lng and radius.
 class MBLocationTrigger extends MBTrigger {
+  /// The address of the location.
   final String address;
+
+  /// The latitude of the location.
   final double latitude;
+
+  /// The longitude of the location.
   final double longitude;
+
+  /// The radius to check, in meters.
   final double radius;
 
+  /// The lookback window to check (in days).
   final int afterDays;
 
+  /// The date of completion of this trigger.
   DateTime completionDate;
 
+  /// Initializes a location trigger with the data provided.
   MBLocationTrigger({
     @required String id,
     @required this.address,
@@ -25,6 +36,7 @@ class MBLocationTrigger extends MBTrigger {
           triggerType: MBTriggerType.location,
         );
 
+  /// Initializes a location trigger with the data of the dictionary returned by the APIs.
   factory MBLocationTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
     String address = dictionary['address'] ?? '';
@@ -43,6 +55,12 @@ class MBLocationTrigger extends MBTrigger {
     );
   }
 
+  /// Function called when new location data is available.
+  /// @param latitude The new latitude.
+  /// @param longitude The new longitude.
+  /// @param lastLatitude The last latitude seen by `MBAutomation`.
+  /// @param lastLongitude The last longitude seen by `MBAutomation`.
+  /// @returns If this trigger has changed.
   bool locationDataUpdated({
     @required latitude,
     @required longitude,
@@ -89,6 +107,12 @@ class MBLocationTrigger extends MBTrigger {
     return false;
   }
 
+  /// Calculates the distance between 2 locations.
+  /// @param lat1 Latitude for the first location.
+  /// @param lon1 Longitude for the first location.
+  /// @param lat2 Latitude for the second location.
+  /// @param lon2 Longitude for the second location.
+  /// @returns The distance between locations, in meters.
   double _calculateDistance(lat1, lon1, lat2, lon2) {
     var p = 0.017453292519943295;
     var c = cos;
@@ -98,6 +122,9 @@ class MBLocationTrigger extends MBTrigger {
     return 12742 * asin(sqrt(a));
   }
 
+  /// If the trigger is valid or not.
+  /// @param fromAppStartup If the check has been triggered at the app startup
+  /// @returns If the trigger is valid or not.
   @override
   Future<bool> isValid(bool fromAppStartup) async {
     if (completionDate == null) {

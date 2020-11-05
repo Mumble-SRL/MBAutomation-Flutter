@@ -2,9 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:mbaudience/mbaudience.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
+/// An inactive user trigger that becomes true when a user has been inactive for n days.
 class MBInactiveUserTrigger extends MBTrigger {
+  /// The number of days the user needs to stay inactive.
   final int days;
 
+  /// Initializes an inactive user trigger with the data provided.
   MBInactiveUserTrigger({
     @required String id,
     @required this.days,
@@ -13,6 +16,7 @@ class MBInactiveUserTrigger extends MBTrigger {
           triggerType: MBTriggerType.inactiveUser,
         );
 
+  /// Initializes an inactive user trigger with the data of the dictionary returned by the APIs.
   factory MBInactiveUserTrigger.fromDictionary(
       Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
@@ -24,6 +28,9 @@ class MBInactiveUserTrigger extends MBTrigger {
     );
   }
 
+  /// If the trigger is valid or not.
+  /// @param fromAppStartup If the check has been triggered at the app startup
+  /// @returns If the trigger is valid or not.
   @override
   Future<bool> isValid(bool fromAppStartup) async {
     if (!fromAppStartup) {

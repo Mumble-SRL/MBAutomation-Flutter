@@ -1,25 +1,47 @@
 import 'package:flutter/foundation.dart';
 
+/// The type of trigger.
 enum MBTriggerType {
+  /// A location trigger.
   location,
+
+  /// An app opening trigger.
   appOpening,
+
+  /// A view trigger.
   view,
+
+  /// An inactive user trigger.
   inactiveUser,
+
+  /// An event trigger.
   event,
+
+  /// A tag change trigger.
   tagChange,
+
+  /// An unknown type trigger.
   unknown,
 }
 
+/// A general trigger for automation, you should always use and see subclasses of this.
 class MBTrigger {
+  /// The id of the trigger.
   final String id;
 
+  /// The type of trigger.
   final MBTriggerType triggerType;
 
+  /// Initializes a trigger with an id and a type.
+  /// @param id The id of the trigger.
+  /// @param triggerType The type of trigger.
   MBTrigger({
     @required this.id,
     @required this.triggerType,
   });
 
+  /// Initializes a trigger with the data of the dictionary returned by the APIs.
+  /// The type of trigger is set to `MBTriggerType.unknown`.
   factory MBTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'];
     return MBTrigger(
@@ -28,11 +50,16 @@ class MBTrigger {
     );
   }
 
+  /// If the trigger is valid or not.
+  /// @param fromAppStartup If the check has been triggered at the app startup
+  /// @returns If the trigger is valid or not.
   Future<bool> isValid(bool fromAppStartup) async {
     return false;
   }
 
 //region json
+  /// Converts the trigger to a JSON dictionary.
+  /// @returns The JSON representation of the trigger.
   Map<String, dynamic> toJsonDictionary() {
     return {
       'id': id,
@@ -40,6 +67,8 @@ class MBTrigger {
     };
   }
 
+  /// Initializes a trigger from a JSON dictionary.
+  /// @param dictionary The JSON dictionary.
   factory MBTrigger.fromJsonDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'];
     String triggerTypeString = dictionary['type'];
@@ -53,6 +82,9 @@ class MBTrigger {
 //endregion
 
 //region trigger type conversions
+  /// Converts a `MBTriggerType` to a string.
+  /// @param triggerType The trigger type.
+  /// @returns The string representation of the trigger type.
   static String _stringFromTriggerType(MBTriggerType triggerType) {
     switch (triggerType) {
       case MBTriggerType.location:
@@ -80,6 +112,9 @@ class MBTrigger {
     return 'unknown';
   }
 
+  /// Converts a string to a `MBTriggerType`.
+  /// @param triggerTypeString The string that represents the trigger type.
+  /// @returns The MBTriggerType that matches the string, if no match is found it returns `MBTriggerType.unknown`.
   static MBTriggerType triggerTypeFromString(String triggerTypeString) {
     switch (triggerTypeString) {
       case 'location':
@@ -110,8 +145,9 @@ class MBTrigger {
 
 //region update trigger
 
-  /// Updates the trigger with the new infos
-  /// By defaults no action is don
+  /// Updates the trigger with the new info; by defaults no action is done.
+  /// @param newTrigger The new trigger from which info will be copied.
+  /// @returns The updated trigger.
   MBTrigger updatedTrigger(MBTrigger newTrigger) {
     return newTrigger;
   }

@@ -8,7 +8,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 
+/// This class is used by MBAutomation to manage push notification, save notification messages already showed
+/// and call the Flutter plugin to schedule notifications.
 class MBAutomationPushNotificationsManager {
+  /// Shows a push notification for the messages, if they've not been already showed.
+  /// @param messages The list of messages.
   static Future<void> showPushNotifications(List<MBMessage> messages) async {
     List<MBMessage> messagesToShow = [];
     for (MBMessage message in messagesToShow) {
@@ -26,13 +30,17 @@ class MBAutomationPushNotificationsManager {
     }
   }
 
+  /// Cancels a push notification for the message passed.
+  /// @param message The message for which cancel the push.
   static Future<void> cancelPushNotificationForMessage(
       MBMessage message) async {
-    String identifier = _notificatinIdentifierForMessage(message);
+    String identifier = _notificationIdentifierForMessage(message);
     await MBAutomationFlutterPlugin.cancelLocalNotification(id: identifier);
     await _unsetMessageShowed(message);
   }
 
+  /// Shows a push notification for a message.
+  /// @param message The message to show.
   static Future<void> _showPushNotificationForMessage(MBMessage message) async {
     if (message.pushMessage == null) {
       return;
@@ -40,7 +48,7 @@ class MBAutomationPushNotificationsManager {
 
     MBPushMessage pushMessage = message.pushMessage;
 
-    String id = _notificatinIdentifierForMessage(message);
+    String id = _notificationIdentifierForMessage(message);
     String title = pushMessage.title;
     String body = pushMessage.body;
     int badge = pushMessage.badge;
@@ -78,6 +86,9 @@ class MBAutomationPushNotificationsManager {
     }
   }
 
+  /// Downloads the image for the notification.
+  /// @param media The url of the media.
+  /// @returns A Future that completes with the File of the downloaded media.
   static Future<File> _downloadImage(String media) async {
     if (media != null) {
       return null;
@@ -90,10 +101,14 @@ class MBAutomationPushNotificationsManager {
     return file;
   }
 
-  static String _notificatinIdentifierForMessage(MBMessage message) {
+  /// The notification identifier string for the message passed.
+  /// @param message The message for which the identifier will be created.
+  static String _notificationIdentifierForMessage(MBMessage message) {
     return 'mburger.automation.push.' + (message.id?.toString() ?? '');
   }
 
+  /// If a message has already been shoewd or not.
+  /// @param The message to check.
   static Future<bool> _messageHasBeenShowed(MBMessage message) async {
     if (message.id == null) {
       return false;
@@ -103,6 +118,8 @@ class MBAutomationPushNotificationsManager {
     return showedMessages.contains(message.id.toString());
   }
 
+  /// Set a message as showed.
+  /// @param The message to set as showed.
   static Future<void> _setMessageShowed(MBMessage message) async {
     if (message.id == null) {
       return;
@@ -115,6 +132,8 @@ class MBAutomationPushNotificationsManager {
     }
   }
 
+  /// Unset a message as showed.
+  /// @param The message to unset as showed.
   static Future<void> _unsetMessageShowed(MBMessage message) async {
     if (message.id == null) {
       return;
@@ -127,6 +146,7 @@ class MBAutomationPushNotificationsManager {
     }
   }
 
+  /// The key used to save showed messages in shared preferences.
   static String get _showedMessagesKey =>
       'com.mumble.mburger.automation.pushMessages.showedMessages';
 }

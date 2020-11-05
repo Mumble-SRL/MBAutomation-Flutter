@@ -2,16 +2,24 @@ import 'package:flutter/foundation.dart';
 import 'package:mbautomation/tracking/model/mb_automation_view.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
+/// A view trigger that becomes true when a view is viewed n times and the user stays in the view for a tot of seconds.
 class MBViewTrigger extends MBTrigger {
+  /// The view name.
   final String view;
 
+  /// The times the user needs to see the specified view.
   final int times;
 
+  /// The seconds the user needs to stay in the view.
   final int secondsOnView;
 
+  /// If the trigger has been completed this var will have the date the event has been completed.
   DateTime completionDate;
+
+  /// Counter to keeps track of how many times an event has happened.
   int numberOfTimes;
 
+  /// Initializes a view trigger with the data provided.
   MBViewTrigger({
     @required String id,
     @required this.view,
@@ -22,6 +30,7 @@ class MBViewTrigger extends MBTrigger {
           triggerType: MBTriggerType.view,
         );
 
+  /// Initializes a view trigger with the data of the dictionary returned by the APIs.
   factory MBViewTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
     String view = dictionary['view_name'] ?? '';
@@ -36,6 +45,9 @@ class MBViewTrigger extends MBTrigger {
     );
   }
 
+  /// Function called when the user views a view
+  /// @param view The view viewed.
+  /// @returns If theis trigger has changed or not.
   bool screenViewed(MBAutomationView view) {
     if (view.view == this.view) {
       this.numberOfTimes = (this.numberOfTimes ?? 0) + 1;
@@ -44,10 +56,15 @@ class MBViewTrigger extends MBTrigger {
     return false;
   }
 
+  /// Sets the trigger as completed.
+  /// This function set the completionDate of the trigger to now.
   void setCompleted() {
     completionDate = DateTime.now();
   }
 
+  /// If the trigger is valid or not.
+  /// @param fromAppStartup If the check has been triggered at the app startup
+  /// @returns If the trigger is valid or not.
   @override
   Future<bool> isValid(bool fromAppStartup) async {
     if (completionDate == null) {

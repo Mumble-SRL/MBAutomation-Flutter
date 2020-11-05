@@ -7,14 +7,14 @@ import 'package:mbautomation/triggers/mb_trigger.dart';
 import 'package:mbautomation/triggers/mb_view_trigger.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
 
+/// This class manages the view triggers, it's informed when a screen is viewed and it informs all the MBViewTrigger triggers.
 class MBAutomationMessagesViewManager {
-  static MBAutomationMessagesViewManager shared =
-      MBAutomationMessagesViewManager._privateConstructor();
+  /// Timer to set a screen as viewed after the seconds specified in the trigger.
+  static Timer _timer;
 
-  MBAutomationMessagesViewManager._privateConstructor();
-
-  Timer _timer;
-  Future<void> screenViewed(MBAutomationView view) async {
+  /// Function called by `MBAutomationMessagesManager` when a screen is viewed.
+  /// @param view The view that has been viewed.
+  static Future<void> screenViewed(MBAutomationView view) async {
     if (_timer != null) {
       _timer.cancel();
     }
@@ -54,7 +54,13 @@ class MBAutomationMessagesViewManager {
     }
   }
 
-  Future<void> _setTriggerCompleted(int messageId, int triggerIndex) async {
+  /// Sets a trigger as completed.
+  /// @param messageId The id of the message.
+  /// @param triggerIndex The index of the trigger that will be set as completed.
+  static Future<void> _setTriggerCompleted(
+    int messageId,
+    int triggerIndex,
+  ) async {
     List<MBMessage> messagesSaved =
         await MBAutomationMessagesManager.savedMessages();
     if (messagesSaved == null) {
