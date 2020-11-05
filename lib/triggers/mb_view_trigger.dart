@@ -49,8 +49,7 @@ class MBViewTrigger extends MBTrigger {
   }
 
   @override
-  Future<bool>
-  isValid(bool fromAppStartup) async {
+  Future<bool> isValid(bool fromAppStartup) async {
     if (completionDate == null) {
       return false;
     }
