@@ -109,9 +109,9 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// @param view The name of the view.
   /// @param metadata Optional metadata associated with the view.
   static Future<void> trackScreenView(
-    String view,
+    String view, {
     Map<String, dynamic> metadata,
-  ) async {
+  }) async {
     MBAutomationView automationView =
         MBAutomationView(view: view, metadata: metadata);
     MBAutomationMessagesManager.screenViewed(automationView);

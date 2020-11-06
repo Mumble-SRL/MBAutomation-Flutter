@@ -77,14 +77,16 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: [MBAutomationNavigatorObserver()],
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('MBAudience example app'),
-        ),
-        body: Center(
-          child: FlatButton(
-            child: Text('Send Event'),
-            onPressed: () => _sendEvent(),
+      home: MBMessagesBuilder(
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('MBAudience example app'),
+          ),
+          body: Center(
+            child: FlatButton(
+              child: Text('Send Event'),
+              onPressed: () => _sendEvent(),
+            ),
           ),
         ),
       ),
