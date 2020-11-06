@@ -10,7 +10,10 @@ class MBAutomationNavigatorObserver extends RouteObserver<PageRoute<dynamic>> {
   void _sendScreenView(PageRoute<dynamic> route) {
     final String screenName = route.settings.name;
     if (screenName != null) {
-      MBAutomation.trackScreenView(screenName, null);
+      MBAutomation.trackScreenView(
+        screenName,
+        metadata: null,
+      );
     }
   }
 
