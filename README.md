@@ -97,7 +97,7 @@ You can send events with `MBAutomation` liike this:
 MBAutomation.sendEvent('EVENT_NAME');
 ```
 
-You can specify 2 more parameters, both optional: `name` a name that will be displayed in the MBurger dashboard and a dictionary of additional `metadata` to specifymore fields of the event
+You can specify 2 more parameters, both optional: `name` a name that will be displayed in the MBurger dashboard and a map of additional `metadata` to specifymore fields of the event
 
 ``` dart
 MBAutomation.sendEvent(
