@@ -386,7 +386,7 @@ class MBAutomationMessagesManager {
           (m) => m.id == message.id,
           orElse: () => null,
         );
-        if (savedMessage == null) {
+        if (savedMessage != null) {
           if (savedMessage.triggers != null && message.triggers != null) {
             if (savedMessage.triggers is MBMessageTriggers &&
                 message.triggers is MBMessageTriggers) {
