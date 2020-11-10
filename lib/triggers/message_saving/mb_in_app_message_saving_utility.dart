@@ -76,11 +76,11 @@ class MBInAppMessageSavingUtility {
       style: _inAppMessageStyleForString(styleString),
       duration: duration,
       title: title,
-      titleColor: Color(titleColor),
+      titleColor: titleColor != null ? Color(titleColor) : null,
       body: body,
-      bodyColor: Color(bodyColor),
+      bodyColor: bodyColor != null ? Color(bodyColor) : null,
       image: image,
-      backgroundColor: Color(backgroundColor),
+      backgroundColor: backgroundColor != null ? Color(backgroundColor) : null,
       buttons: buttons,
     );
   }
@@ -160,8 +160,8 @@ class MBInAppMessageSavingUtility {
 
     return MBInAppMessageButton(
       title: title,
-      titleColor: Color(titleColor),
-      backgroundColor: Color(backgroundColor),
+      titleColor: titleColor != null ? Color(titleColor) : null,
+      backgroundColor: backgroundColor != null ? Color(backgroundColor) : null,
       link: link,
       linkTypeString: linkType,
     );

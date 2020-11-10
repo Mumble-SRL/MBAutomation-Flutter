@@ -46,6 +46,7 @@ class MBMessageTriggers {
         }
       }
     }
+    this.triggers = triggers;
   }
 
   /// If the trigger is valid, based on the triggers method and all the triggers.
@@ -69,7 +70,7 @@ class MBMessageTriggers {
           }
       }
     }
-    return true;
+    return method == MBMessageTriggersMethod.any ? false : true;
   }
 
   /// Creates and initializes the trigger with a saved JSON dictionary.
@@ -80,7 +81,8 @@ class MBMessageTriggers {
     if (dictionary['triggers'] != null) {
       if (dictionary['triggers'] is List) {
         List<Map<String, dynamic>> triggersDictionaries =
-            dictionary['triggers'];
+            List.castFrom<dynamic, Map<String, dynamic>>(
+                dictionary['triggers']);
         triggers = triggersDictionaries
             .map(
                 (t) => MBAutomationMessagesManager.triggerFromJsonDictionary(t))
@@ -96,7 +98,8 @@ class MBMessageTriggers {
     };
 
     if (triggers != null) {
-      dictionary['triggers'] = triggers.map((e) => e.toJsonDictionary());
+      dictionary['triggers'] =
+          triggers.map((e) => e.toJsonDictionary()).toList();
     }
 
     return dictionary;

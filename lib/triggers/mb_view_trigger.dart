@@ -33,9 +33,20 @@ class MBViewTrigger extends MBTrigger {
   /// Initializes a view trigger with the data of the dictionary returned by the APIs.
   factory MBViewTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
-    String view = dictionary['view_name'] ?? '';
-    int times = dictionary['times'];
-    int secondsOnView = dictionary['seconds_on_view'];
+    String view = dictionary['view'] ?? '';
+    int times = 0;
+    if (dictionary['times'] is int) {
+      times = dictionary['times'];
+    } else if (dictionary['times'] is String) {
+      times = int.tryParse(dictionary['times']) ?? 0;
+    }
+
+    int secondsOnView = 0;
+    if (dictionary['seconds_on_view'] is int) {
+      secondsOnView = dictionary['seconds_on_view'];
+    } else if (dictionary['seconds_on_view'] is String) {
+      secondsOnView = int.tryParse(dictionary['seconds_on_view']) ?? 0;
+    }
 
     return MBViewTrigger(
       id: id,
@@ -108,7 +119,8 @@ class MBViewTrigger extends MBTrigger {
     );
 
     if (dictionary['completionDate'] != null) {
-      trigger.completionDate = dictionary['completionDate'] * 1000;
+      int timeStamp = dictionary['completionDate'] * 1000;
+      trigger.completionDate = DateTime.fromMillisecondsSinceEpoch(timeStamp);
     }
 
     if (dictionary['numberOfTimes'] != null) {

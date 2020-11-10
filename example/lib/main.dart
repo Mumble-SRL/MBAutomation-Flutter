@@ -80,7 +80,7 @@ class _MyAppState extends State<MyApp> {
       home: MBMessagesBuilder(
         child: Scaffold(
           appBar: AppBar(
-            title: const Text('MBAudience example app'),
+            title: const Text('MBAutomation example app'),
           ),
           body: Center(
             child: FlatButton(
