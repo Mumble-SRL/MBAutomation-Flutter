@@ -444,7 +444,7 @@ class MBAutomationMessagesManager {
   static Future<String> _messagesPath() async {
     final directory = await getApplicationDocumentsDirectory();
     String file = 'mb_automation_messages_f.json';
-    return '$directory/$file';
+    return '${directory.path}/$file';
   }
 //endregion
 
