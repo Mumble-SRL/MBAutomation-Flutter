@@ -30,7 +30,7 @@ class MBInAppMessageSavingUtility {
       dictionary['image'] = inAppMessage.image;
     }
     if (inAppMessage.backgroundColor != null) {
-      dictionary['backgroundColor'] = inAppMessage.backgroundColor;
+      dictionary['backgroundColor'] = inAppMessage.backgroundColor.value;
     }
     if (inAppMessage.buttons != null) {
       dictionary['buttons'] =
