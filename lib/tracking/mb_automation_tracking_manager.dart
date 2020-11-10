@@ -119,7 +119,7 @@ class MBAutomationTrackingManager {
         views.map((v) => v.toApiDictionary()).toList();
 
     var defaultParameters = await MBManager.shared.defaultParameters();
-    var headers = await MBManager.shared.headers(contentTypeJson: false);
+    var headers = await MBManager.shared.headers(contentTypeJson: true);
 
     Map<String, dynamic> parameters = Map<String, dynamic>();
     parameters.addAll(defaultParameters);
@@ -159,7 +159,7 @@ class MBAutomationTrackingManager {
         events.map((v) => v.toApiDictionary()).toList();
 
     var defaultParameters = await MBManager.shared.defaultParameters();
-    var headers = await MBManager.shared.headers(contentTypeJson: false);
+    var headers = await MBManager.shared.headers(contentTypeJson: true);
 
     Map<String, dynamic> parameters = Map<String, dynamic>();
     parameters.addAll(defaultParameters);
