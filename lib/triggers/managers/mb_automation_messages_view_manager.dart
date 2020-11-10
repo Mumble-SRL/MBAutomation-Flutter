@@ -6,6 +6,7 @@ import 'package:mbautomation/triggers/mb_message_triggers.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 import 'package:mbautomation/triggers/mb_view_trigger.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
+import 'package:mbautomation/triggers/managers/mb_automation_messages_manager.dart';
 
 /// This class manages the view triggers, it's informed when a screen is viewed and it informs all the MBViewTrigger triggers.
 class MBAutomationMessagesViewManager {
@@ -27,16 +28,20 @@ class MBAutomationMessagesViewManager {
       return;
     }
 
+    bool somethingChanged = false;
     for (MBMessage message in messagesSaved) {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
         if (messageTriggers.triggers != null) {
           List<MBViewTrigger> viewTriggers =
-              messageTriggers.triggers.where((t) => t is MBViewTrigger);
+              List.castFrom<MBTrigger, MBViewTrigger>(messageTriggers.triggers
+                  .where((t) => t is MBViewTrigger)
+                  .toList());
           for (MBViewTrigger viewTrigger in viewTriggers) {
             bool result = viewTrigger.screenViewed(view);
             if (result) {
-              if (viewTrigger.numberOfTimes ?? 0 >= viewTrigger.times) {
+              somethingChanged = true;
+              if ((viewTrigger.numberOfTimes ?? 0) >= viewTrigger.times) {
                 int index = messageTriggers.triggers.indexOf(viewTrigger);
                 if ((viewTrigger.secondsOnView ?? 0) != 0) {
                   _timer = Timer(
@@ -51,6 +56,9 @@ class MBAutomationMessagesViewManager {
           }
         }
       }
+    }
+    if (somethingChanged) {
+      MBAutomationMessagesManager.saveMessages(messagesSaved, fromFetch: false,);
     }
   }
 

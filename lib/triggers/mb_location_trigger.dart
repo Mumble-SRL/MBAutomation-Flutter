@@ -42,7 +42,13 @@ class MBLocationTrigger extends MBTrigger {
     String address = dictionary['address'] ?? '';
     double latitude = dictionary['latitude'];
     double longitude = dictionary['longitude'];
-    double radius = dictionary['radius'] ?? 0;
+    double radius = 0;
+    if (dictionary['radius'] is double) {
+      radius = dictionary['radius'];
+    } else if (dictionary['radius'] is int) {
+      int radiusInt = dictionary['radius'];
+      radius = radiusInt.toDouble();
+    }
     int afterDays = dictionary['after'] ?? 0;
 
     return MBLocationTrigger(
@@ -171,7 +177,8 @@ class MBLocationTrigger extends MBTrigger {
     );
 
     if (dictionary['completionDate'] != null) {
-      trigger.completionDate = dictionary['completionDate'] * 1000;
+      int timeStamp = dictionary['completionDate'] * 1000;
+      trigger.completionDate = DateTime.fromMillisecondsSinceEpoch(timeStamp);
     }
 
     return trigger;

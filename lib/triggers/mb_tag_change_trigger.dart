@@ -137,7 +137,8 @@ class MBTagChangeTrigger extends MBTrigger {
     );
 
     if (dictionary['completionDate'] != null) {
-      trigger.completionDate = dictionary['completionDate'] * 1000;
+      int timeStamp = dictionary['completionDate'] * 1000;
+      trigger.completionDate = DateTime.fromMillisecondsSinceEpoch(timeStamp);
     }
 
     return trigger;

@@ -152,7 +152,9 @@ class MBAutomationMessagesManager {
         MBMessageTriggers messageTriggers = message.triggers;
         if (messageTriggers.triggers != null) {
           List<MBEventTrigger> eventsTriggers =
-              messageTriggers.triggers.where((t) => t is MBEventTrigger);
+              List.castFrom<MBTrigger, MBEventTrigger>(messageTriggers.triggers
+                  .where((t) => t is MBEventTrigger)
+                  .toList());
           for (MBEventTrigger eventTrigger in eventsTriggers) {
             bool triggerChanged = await eventTrigger.eventHappened(event);
             if (triggerChanged) {
@@ -198,7 +200,10 @@ class MBAutomationMessagesManager {
         MBMessageTriggers messageTriggers = message.triggers;
         if (messageTriggers.triggers != null) {
           List<MBTagChangeTrigger> tagTriggers =
-              messageTriggers.triggers.where((t) => t is MBTagChangeTrigger);
+              List.castFrom<MBTrigger, MBTagChangeTrigger>(messageTriggers
+                  .triggers
+                  .where((t) => t is MBTagChangeTrigger)
+                  .toList());
           for (MBTagChangeTrigger tagTrigger in tagTriggers) {
             MBTriggerChangedStatus result = tagTrigger.tagChanged(tag, value);
             if (result != MBTriggerChangedStatus.unchanged) {
@@ -250,7 +255,10 @@ class MBAutomationMessagesManager {
         MBMessageTriggers messageTriggers = message.triggers;
         if (messageTriggers.triggers != null) {
           List<MBLocationTrigger> locationTriggers =
-              messageTriggers.triggers.where((t) => t is MBLocationTrigger);
+              List.castFrom<MBTrigger, MBLocationTrigger>(messageTriggers
+                  .triggers
+                  .where((t) => t is MBLocationTrigger)
+                  .toList());
           for (MBLocationTrigger locationTrigger in locationTriggers) {
             bool triggerChanged = locationTrigger.locationDataUpdated(
               latitude: latitude,
@@ -394,6 +402,9 @@ class MBAutomationMessagesManager {
               MBMessageTriggers messageTriggers = message.triggers;
               savedTriggers.updateTriggers(messageTriggers);
             }
+          } else if (savedMessage.triggers == null &&
+              message.triggers != null) {
+            savedMessage.triggers = message.triggers;
           }
           messagesToSave.add(savedMessage);
         } else {

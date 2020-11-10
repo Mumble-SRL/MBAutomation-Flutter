@@ -96,6 +96,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
         }
       }
     }
+    MBAutomationMessagesManager.setTriggersToMessages(automationMessages);
     MBAutomationMessagesManager.saveMessages(
       automationMessages,
       fromFetch: true,
