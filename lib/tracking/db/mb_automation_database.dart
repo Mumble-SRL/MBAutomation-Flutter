@@ -99,7 +99,7 @@ class MBAutomationDatabase {
   static Future<List<MBAutomationEvent>> events() async {
     Database db = await _database();
     final res = await db.query(
-      'view',
+      'event',
       orderBy: 'timestamp ASC',
     );
     if (res.isNotEmpty) {
