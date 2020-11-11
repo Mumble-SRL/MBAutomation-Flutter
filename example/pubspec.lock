@@ -141,28 +141,28 @@ packages:
       name: mbaudience
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+1"
+    version: "0.0.1+2"
   mbautomation:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.0.1+5"
+    version: "0.0.1+6"
   mbmessages:
     dependency: transitive
     description:
       name: mbmessages
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1"
+    version: "0.0.1+1"
   mburger:
     dependency: transitive
     description:
       name: mburger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+19"
+    version: "0.0.1+20"
   meta:
     dependency: transitive
     description:
