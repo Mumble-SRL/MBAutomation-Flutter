@@ -1,3 +1,3 @@
-## 0.0.1+6
+## 0.0.1+8
 
-* Bugfixes.
+* Added sectionId and blockId to in app message button action saving.

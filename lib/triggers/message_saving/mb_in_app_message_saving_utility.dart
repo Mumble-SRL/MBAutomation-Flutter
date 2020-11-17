@@ -144,6 +144,12 @@ class MBInAppMessageSavingUtility {
     if (button.backgroundColor != null) {
       dictionary['backgroundColor'] = button.backgroundColor.value;
     }
+    if (button.sectionId != null) {
+      dictionary['sectionId'] = button.sectionId;
+    }
+    if (button.blockId != null) {
+      dictionary['blockId'] = button.blockId;
+    }
     return dictionary;
   }
 
@@ -157,12 +163,16 @@ class MBInAppMessageSavingUtility {
     String linkType = jsonDictionary['linkType'];
     int titleColor = jsonDictionary['titleColor'];
     int backgroundColor = jsonDictionary['backgroundColor'];
+    int sectionId = jsonDictionary['sectionId'];
+    int blockId = jsonDictionary['blockId'];
 
     return MBInAppMessageButton(
       title: title,
       titleColor: titleColor != null ? Color(titleColor) : null,
       backgroundColor: backgroundColor != null ? Color(backgroundColor) : null,
       link: link,
+      sectionId: sectionId,
+      blockId: blockId,
       linkTypeString: linkType,
     );
   }
@@ -177,6 +187,9 @@ class MBInAppMessageSavingUtility {
         break;
       case MBInAppMessageButtonLinkType.inApp:
         return 'in_app';
+        break;
+      case MBInAppMessageButtonLinkType.section:
+        return 'section';
         break;
     }
     return 'link';

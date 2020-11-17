@@ -6,7 +6,6 @@ import 'package:mbautomation/triggers/mb_message_triggers.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 import 'package:mbautomation/triggers/mb_view_trigger.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
-import 'package:mbautomation/triggers/managers/mb_automation_messages_manager.dart';
 
 /// This class manages the view triggers, it's informed when a screen is viewed and it informs all the MBViewTrigger triggers.
 class MBAutomationMessagesViewManager {
@@ -58,7 +57,10 @@ class MBAutomationMessagesViewManager {
       }
     }
     if (somethingChanged) {
-      MBAutomationMessagesManager.saveMessages(messagesSaved, fromFetch: false,);
+      MBAutomationMessagesManager.saveMessages(
+        messagesSaved,
+        fromFetch: false,
+      );
     }
   }
 
