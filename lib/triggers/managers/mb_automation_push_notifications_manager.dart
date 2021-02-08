@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:mbautomation/mbautomation_plugin.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
@@ -17,8 +19,8 @@ class MBAutomationPushNotificationsManager {
     List<MBMessage> messagesToShow = [];
     for (MBMessage message in messagesToShow) {
       if (message.messageType == MBMessageType.push) {
-        bool messageHasBeenShowed = await _messageHasBeenShowed(message);
-        if (!messageHasBeenShowed) {
+        bool needsToShowMessage = await _needsToShowMessage(message);
+        if (needsToShowMessage) {
           messagesToShow.add(message);
         }
       }
@@ -109,13 +111,22 @@ class MBAutomationPushNotificationsManager {
 
   /// If a message has already been shoewd or not.
   /// @param The message to check.
-  static Future<bool> _messageHasBeenShowed(MBMessage message) async {
+  static Future<bool> _needsToShowMessage(MBMessage message) async {
+    if (message.endDate.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
+      return false;
+    }
     if (message.id == null) {
       return false;
     }
+    Map<int, int> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> showedMessages = prefs.getStringList(_showedMessagesKey) ?? [];
-    return showedMessages.contains(message.id.toString());
+    String showedMessagesString = prefs.getString(_showedMessagesKey);
+    if (showedMessagesString != null) {
+      showedMessagesCount =
+      Map<int, int>.from(json.decode(showedMessagesString));
+    }
+    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    return messageShowCount <= message.repeatTimes;
   }
 
   /// Set a message as showed.
@@ -124,12 +135,16 @@ class MBAutomationPushNotificationsManager {
     if (message.id == null) {
       return;
     }
+    Map<int, int> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> showedMessages = prefs.getStringList(_showedMessagesKey) ?? [];
-    if (!showedMessages.contains(message.id.toString())) {
-      showedMessages.add(message.id.toString());
-      await prefs.setStringList(_showedMessagesKey, showedMessages);
+    String showedMessagesString = prefs.getString(_showedMessagesKey);
+    if (showedMessagesString != null) {
+      showedMessagesCount =
+      Map<int, int>.from(json.decode(showedMessagesString));
     }
+    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    showedMessagesCount[message.id] = messageShowCount + 1;
+    await prefs.setString(_showedMessagesKey, json.encode(showedMessagesCount));
   }
 
   /// Unset a message as showed.
@@ -138,15 +153,19 @@ class MBAutomationPushNotificationsManager {
     if (message.id == null) {
       return;
     }
+    Map<int, int> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    List<String> showedMessages = prefs.getStringList(_showedMessagesKey) ?? [];
-    if (!showedMessages.contains(message.id.toString())) {
-      showedMessages.remove(message.id.toString());
-      await prefs.setStringList(_showedMessagesKey, showedMessages);
+    String showedMessagesString = prefs.getString(_showedMessagesKey);
+    if (showedMessagesString != null) {
+      showedMessagesCount =
+      Map<int, int>.from(json.decode(showedMessagesString));
     }
+    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    showedMessagesCount[message.id] = max(0, messageShowCount - 1);
+    await prefs.setString(_showedMessagesKey, json.encode(showedMessagesCount));
   }
 
   /// The key used to save showed messages in shared preferences.
   static String get _showedMessagesKey =>
-      'com.mumble.mburger.automation.pushMessages.showedMessages';
+      'com.mumble.mburger.automation.pushMessages.showedMessages.count';
 }

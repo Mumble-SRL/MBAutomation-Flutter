@@ -108,6 +108,7 @@ class MBAutomationMessagesManager {
     }
     return MBTrigger.fromDictionary(dictionary);
   }
+
 //endregion
 
 //region timer
@@ -132,6 +133,7 @@ class MBAutomationMessagesManager {
       (timer) => checkMessages(fromStartup: false),
     );
   }
+
 //endregion
 
   /// Function called when an event happens.
@@ -339,6 +341,18 @@ class MBAutomationMessagesManager {
           MBMessageTriggers messageTriggers = message.triggers;
           bool triggerIsValid =
               await messageTriggers.isValid(fromStartup) ?? false;
+          if (message.repeatTimes > 0) {
+            Map<String, dynamic> savedTriggers =
+                await _savedMessageTriggers(message);
+            if (savedTriggers != null) {
+              Map<String, dynamic> triggersDictionary =
+              messageTriggers.toJsonDictionary();
+              if (mapEquals(savedTriggers, triggersDictionary)) {
+                continue;
+              }
+            }
+            await _saveMessageTriggers(message);
+          }
           if (triggerIsValid) {
             messagesToShow.add(message);
           }
@@ -405,6 +419,8 @@ class MBAutomationMessagesManager {
           } else if (savedMessage.triggers == null &&
               message.triggers != null) {
             savedMessage.triggers = message.triggers;
+            savedMessage.sendAfterDays = message.sendAfterDays;
+            savedMessage.repeatTimes = message.repeatTimes;
           }
           messagesToSave.add(savedMessage);
         } else {
@@ -451,12 +467,63 @@ class MBAutomationMessagesManager {
     return messages;
   }
 
+  static Future<void> _saveMessageTriggers(MBMessage message) async {
+    String path = await _triggersPath(message);
+    if (path == null) {
+      return;
+    }
+    if (message.triggers == null) {
+      return;
+    }
+    File f = File(path);
+    bool fileExists = await f.exists();
+    if (!fileExists) {
+      return;
+    }
+    if (message.triggers is MBMessageTriggers) {
+      Map<String, dynamic> triggers =
+          (message.triggers as MBMessageTriggers).toJsonDictionary();
+      String jsonString = json.encode(triggers);
+      if (!(await f.exists())) {
+        await f.create(recursive: true);
+      }
+      await f.writeAsString(jsonString);
+    }
+  }
+
+  static Future<Map<String, dynamic>> _savedMessageTriggers(
+      MBMessage message) async {
+    String path = await _triggersPath(message);
+    if (path == null) {
+      return null;
+    }
+    File f = File(path);
+    bool fileExists = await f.exists();
+    if (!fileExists) {
+      return null;
+    }
+    String contents = await f.readAsString();
+    if (contents == null) {
+      return null;
+    }
+    Map<String, dynamic> dictionary = json.decode(contents);
+    return dictionary;
+  }
+
   /// The path in which messages will be saved.
   static Future<String> _messagesPath() async {
     final directory = await getApplicationDocumentsDirectory();
     String file = 'mb_automation_messages_f.json';
     return '${directory.path}/$file';
   }
+
+  static Future<String> _triggersPath(MBMessage message) async {
+    final directory = await getApplicationDocumentsDirectory();
+    String file =
+        'mb_automation_messages_' + message.id.toString() + '_triggers.json';
+    return '${directory.path}/$file';
+  }
+
 //endregion
 
 }
