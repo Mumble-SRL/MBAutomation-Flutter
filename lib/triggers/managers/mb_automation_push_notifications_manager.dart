@@ -112,20 +112,24 @@ class MBAutomationPushNotificationsManager {
   /// If a message has already been shoewd or not.
   /// @param The message to check.
   static Future<bool> _needsToShowMessage(MBMessage message) async {
-    if (message.endDate.millisecondsSinceEpoch < DateTime.now().millisecondsSinceEpoch) {
-      return false;
+    if (message.automationIsOn) {
+      if (message.endDate.millisecondsSinceEpoch < DateTime
+          .now()
+          .millisecondsSinceEpoch) {
+        return false;
+      }
     }
     if (message.id == null) {
       return false;
     }
-    Map<int, int> showedMessagesCount = {};
+    Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String showedMessagesString = prefs.getString(_showedMessagesKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<int, int>.from(json.decode(showedMessagesString));
+      Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
-    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
     return messageShowCount <= message.repeatTimes;
   }
 
@@ -135,15 +139,15 @@ class MBAutomationPushNotificationsManager {
     if (message.id == null) {
       return;
     }
-    Map<int, int> showedMessagesCount = {};
+    Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String showedMessagesString = prefs.getString(_showedMessagesKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<int, int>.from(json.decode(showedMessagesString));
+      Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id] ?? 0;
-    showedMessagesCount[message.id] = messageShowCount + 1;
+    showedMessagesCount[message.id.toString()] = messageShowCount + 1;
     await prefs.setString(_showedMessagesKey, json.encode(showedMessagesCount));
   }
 

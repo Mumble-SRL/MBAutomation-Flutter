@@ -16,10 +16,8 @@ dependencies:
     sdk: flutter
   http: ^0.12.0+4
   mburger: ^0.0.2
-  mbmessages:
-    path: ../mbmessages
-  mbaudience:
-    path: ../mbaudience
+  mbmessages: ^0.0.2
+  mbaudience: ^0.0.2
   path: ^1.7.0
   path_provider: ^1.6.21
   shared_preferences: ^0.5.12+2
