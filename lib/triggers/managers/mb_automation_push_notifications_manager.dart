@@ -17,7 +17,7 @@ class MBAutomationPushNotificationsManager {
   /// @param messages The list of messages.
   static Future<void> showPushNotifications(List<MBMessage> messages) async {
     List<MBMessage> messagesToShow = [];
-    for (MBMessage message in messagesToShow) {
+    for (MBMessage message in messages) {
       if (message.messageType == MBMessageType.push) {
         bool needsToShowMessage = await _needsToShowMessage(message);
         if (needsToShowMessage) {
@@ -157,15 +157,15 @@ class MBAutomationPushNotificationsManager {
     if (message.id == null) {
       return;
     }
-    Map<int, int> showedMessagesCount = {};
+    Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String showedMessagesString = prefs.getString(_showedMessagesKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<int, int>.from(json.decode(showedMessagesString));
+      Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
-    int messageShowCount = showedMessagesCount[message.id] ?? 0;
-    showedMessagesCount[message.id] = max(0, messageShowCount - 1);
+    int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
+    showedMessagesCount[message.id.toString()] = max(0, messageShowCount - 1);
     await prefs.setString(_showedMessagesKey, json.encode(showedMessagesCount));
   }
 

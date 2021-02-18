@@ -118,7 +118,7 @@ class MBMessageTriggers {
         MBTrigger updatedTrigger = trigger.updatedTrigger(newTrigger);
         updatedTriggers.add(updatedTrigger);
       } else {
-        updatedTriggers.add(trigger);
+        updatedTriggers.add(newTrigger);
       }
     }
     this.triggers = updatedTriggers;

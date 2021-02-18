@@ -44,9 +44,9 @@ class MBTagChangeTrigger extends MBTrigger {
     @required this.value,
     @required this.tagChangeOperator,
   }) : super(
-          id: id,
-          triggerType: MBTriggerType.tagChange,
-        );
+    id: id,
+    triggerType: MBTriggerType.tagChange,
+  );
 
   /// Initializes a tag change trigger with the data of the dictionary returned by the APIs.
   factory MBTagChangeTrigger.fromDictionary(Map<String, dynamic> dictionary) {
@@ -60,7 +60,7 @@ class MBTagChangeTrigger extends MBTrigger {
       tag: tag,
       value: value,
       tagChangeOperator:
-          MBTagChangeTrigger._tagChangeOperatorFromString(operatorString),
+      MBTagChangeTrigger._tagChangeOperatorFromString(operatorString),
     );
   }
 
@@ -143,6 +143,7 @@ class MBTagChangeTrigger extends MBTrigger {
 
     return trigger;
   }
+
 //endregion
 
 //region operator-string conversion
