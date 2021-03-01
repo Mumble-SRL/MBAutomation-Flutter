@@ -342,13 +342,19 @@ class MBAutomationMessagesManager {
           bool triggerIsValid =
               await messageTriggers.isValid(fromStartup) ?? false;
           if (message.repeatTimes > 0) {
-            Map<String, dynamic> savedTriggers =
-                await _savedMessageTriggers(message);
-            if (savedTriggers != null) {
-              Map<String, dynamic> triggersDictionary =
-              messageTriggers.toJsonDictionary();
-              if (mapEquals(savedTriggers, triggersDictionary)) {
-                continue;
+            bool hasAppOpeningTriggers = messageTriggers.triggers.firstWhere(
+                    (t) => t is MBAppOpeningTrigger,
+                    orElse: () => null) !=
+                null;
+            if (!(hasAppOpeningTriggers && fromStartup)) {
+              Map<String, dynamic> savedTriggers =
+                  await _savedMessageTriggers(message);
+              if (savedTriggers != null) {
+                Map<String, dynamic> triggersDictionary =
+                    messageTriggers.toJsonDictionary();
+                if (mapEquals(savedTriggers, triggersDictionary)) {
+                  continue;
+                }
               }
             }
             await _saveMessageTriggers(message);
