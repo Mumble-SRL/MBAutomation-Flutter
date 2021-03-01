@@ -326,7 +326,7 @@ class MBAutomationMessagesManager {
 
   /// Checks the saved messages and show them if they need to be showed.
   /// @param fromStartup If the check has been triggered at app startup.
-  static Future<void> checkMessages({bool fromStartup}) async {
+  static Future<void> checkMessages({bool fromStartup: false}) async {
     List<MBMessage> messagesSaved = await savedMessages();
     if (messagesSaved == null) {
       return;

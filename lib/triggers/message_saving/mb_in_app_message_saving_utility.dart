@@ -191,6 +191,9 @@ class MBInAppMessageSavingUtility {
       case MBInAppMessageButtonLinkType.section:
         return 'section';
         break;
+      case MBInAppMessageButtonLinkType.noAction:
+        return 'no-action';
+        break;
     }
     return 'link';
   }
