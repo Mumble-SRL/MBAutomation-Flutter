@@ -19,7 +19,7 @@ dependencies:
   mbmessages: ^0.0.2
   mbaudience: ^0.0.2
   path: ^1.8.0
-  path_provider: ^2.0.1
+  path_provider: ^1.6.21
   shared_preferences: ^2.0.3
   sqflite: ^2.0.0+2
 
