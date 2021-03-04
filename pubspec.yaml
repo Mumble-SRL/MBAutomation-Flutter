@@ -14,7 +14,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.0
+  http: ^0.12.0+2
   mburger: ^1.0.0
   mbmessages: ^0.0.2
   mbaudience: ^0.0.2
