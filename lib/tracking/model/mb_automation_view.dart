@@ -1,16 +1,15 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 /// A view of MBAutomation.
 class MBAutomationView {
   /// The id of the view.
-  final int id;
+  final int? id;
 
   /// The view name.
   final String view;
 
   /// Additional metadata for the view.
-  final Map<String, dynamic> metadata;
+  final Map<String, dynamic>? metadata;
 
   /// Timestamp of the view.
   final DateTime timestamp;
@@ -19,35 +18,35 @@ class MBAutomationView {
   /// @param view The name of the view.
   /// @param metadata Additional metadata for the view.
   MBAutomationView({
-    @required this.view,
+    required this.view,
     this.metadata,
   })  : id = null,
         timestamp = DateTime.now();
 
   /// Initializes a view with all the data. Used when initializing the view from DB data.
   MBAutomationView._withAllData({
-    @required this.id,
-    @required this.view,
-    @required this.metadata,
-    @required this.timestamp,
+    required this.id,
+    required this.view,
+    required this.metadata,
+    required this.timestamp,
   });
 
   /// Initializes a view with the `Map` retrieved from the DB.
   /// @param dbData data retrieved from the DB.
   factory MBAutomationView.fromDbData({
-    @required Map<String, dynamic> dbData,
+    required Map<String, dynamic> dbData,
   }) {
-    int id = dbData['id'];
+    int? id = dbData['id'];
     String view = dbData['view'];
 
-    Map<String, dynamic> metadata;
-    String metadataString = dbData['metadata'];
+    Map<String, dynamic>? metadata;
+    String? metadataString = dbData['metadata'];
     if (metadataString != null) {
       metadata = json.decode(metadataString);
     } else {
       metadata = null;
     }
-    int timestampInt = dbData['timestamp'];
+    int timestampInt = dbData['timestamp'] ?? 0;
     DateTime timestamp =
         DateTime.fromMillisecondsSinceEpoch(timestampInt * 1000);
     return MBAutomationView._withAllData(

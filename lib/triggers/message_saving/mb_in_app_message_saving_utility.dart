@@ -18,23 +18,24 @@ class MBInAppMessageSavingUtility {
       dictionary['title'] = inAppMessage.title;
     }
     if (inAppMessage.titleColor != null) {
-      dictionary['titleColor'] = inAppMessage.titleColor.value;
+      dictionary['titleColor'] = inAppMessage.titleColor!.value;
     }
     if (inAppMessage.body != null) {
       dictionary['body'] = inAppMessage.body;
     }
     if (inAppMessage.bodyColor != null) {
-      dictionary['bodyColor'] = inAppMessage.bodyColor.value;
+      dictionary['bodyColor'] = inAppMessage.bodyColor!.value;
     }
     if (inAppMessage.image != null) {
       dictionary['image'] = inAppMessage.image;
     }
     if (inAppMessage.backgroundColor != null) {
-      dictionary['backgroundColor'] = inAppMessage.backgroundColor.value;
+      dictionary['backgroundColor'] = inAppMessage.backgroundColor!.value;
     }
     if (inAppMessage.buttons != null) {
-      dictionary['buttons'] =
-          inAppMessage.buttons.map((b) => _jsonDictionaryForButton(b)).toList();
+      dictionary['buttons'] = inAppMessage.buttons!
+          .map((b) => _jsonDictionaryForButton(b))
+          .toList();
     }
     return dictionary;
   }
@@ -48,17 +49,17 @@ class MBInAppMessageSavingUtility {
     String styleString = jsonDictionary['style'];
     double duration = jsonDictionary['duration'];
 
-    String title = jsonDictionary['title'];
-    int titleColor = jsonDictionary['titleColor'];
+    String? title = jsonDictionary['title'];
+    int? titleColor = jsonDictionary['titleColor'];
 
-    String body = jsonDictionary['body'];
-    int bodyColor = jsonDictionary['bodyColor'];
+    String? body = jsonDictionary['body'];
+    int? bodyColor = jsonDictionary['bodyColor'];
 
-    String image = jsonDictionary['image'];
+    String? image = jsonDictionary['image'];
 
-    int backgroundColor = jsonDictionary['backgroundColor'];
+    int? backgroundColor = jsonDictionary['backgroundColor'];
 
-    List<MBInAppMessageButton> buttons;
+    List<MBInAppMessageButton>? buttons;
     if (jsonDictionary['buttons'] != null) {
       buttons = [];
       List<Map<String, dynamic>> buttonsDictionaries =
@@ -92,16 +93,12 @@ class MBInAppMessageSavingUtility {
     switch (styleString) {
       case 'banner_top':
         return MBInAppMessageStyle.bannerTop;
-        break;
       case 'banner_bottom':
         return MBInAppMessageStyle.bannerBottom;
-        break;
       case 'center':
         return MBInAppMessageStyle.center;
-        break;
       case 'fullscreen_image':
         return MBInAppMessageStyle.fullscreenImage;
-        break;
     }
     return MBInAppMessageStyle.bannerTop;
   }
@@ -114,18 +111,13 @@ class MBInAppMessageSavingUtility {
     switch (inAppMessageStyle) {
       case MBInAppMessageStyle.bannerTop:
         return 'banner_top';
-        break;
       case MBInAppMessageStyle.bannerBottom:
         return 'banner_bottom';
-        break;
       case MBInAppMessageStyle.center:
         return 'center';
-        break;
       case MBInAppMessageStyle.fullscreenImage:
         return 'fullscreen_image';
-        break;
     }
-    return 'banner_top';
   }
 
   /// Converts a `MBInAppMessageButton` to save it in a JSON.
@@ -139,10 +131,10 @@ class MBInAppMessageSavingUtility {
       'linkType': _stringForLinkType(button.linkType),
     };
     if (button.titleColor != null) {
-      dictionary['titleColor'] = button.titleColor.value;
+      dictionary['titleColor'] = button.titleColor!.value;
     }
     if (button.backgroundColor != null) {
-      dictionary['backgroundColor'] = button.backgroundColor.value;
+      dictionary['backgroundColor'] = button.backgroundColor!.value;
     }
     if (button.sectionId != null) {
       dictionary['sectionId'] = button.sectionId;
@@ -159,12 +151,12 @@ class MBInAppMessageSavingUtility {
   static MBInAppMessageButton _inAppMessageButtonFromJsonDictionary(
       Map<String, dynamic> jsonDictionary) {
     String title = jsonDictionary['title'];
-    String link = jsonDictionary['link'];
-    String linkType = jsonDictionary['linkType'];
-    int titleColor = jsonDictionary['titleColor'];
-    int backgroundColor = jsonDictionary['backgroundColor'];
-    int sectionId = jsonDictionary['sectionId'];
-    int blockId = jsonDictionary['blockId'];
+    String? link = jsonDictionary['link'];
+    String linkType = jsonDictionary['linkType'] ?? 'link';
+    int? titleColor = jsonDictionary['titleColor'];
+    int? backgroundColor = jsonDictionary['backgroundColor'];
+    int? sectionId = jsonDictionary['sectionId'];
+    int? blockId = jsonDictionary['blockId'];
 
     return MBInAppMessageButton(
       title: title,
@@ -184,17 +176,12 @@ class MBInAppMessageSavingUtility {
     switch (linkType) {
       case MBInAppMessageButtonLinkType.link:
         return 'link';
-        break;
       case MBInAppMessageButtonLinkType.inApp:
         return 'in_app';
-        break;
       case MBInAppMessageButtonLinkType.section:
         return 'section';
-        break;
       case MBInAppMessageButtonLinkType.noAction:
         return 'no-action';
-        break;
     }
-    return 'link';
   }
 }

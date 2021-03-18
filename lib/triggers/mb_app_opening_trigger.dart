@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:mbaudience/mbaudience.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
@@ -9,8 +8,8 @@ class MBAppOpeningTrigger extends MBTrigger {
 
   /// Initializes an app opening trigger with the data provided.
   MBAppOpeningTrigger({
-    @required String id,
-    @required this.times,
+    required String id,
+    required this.times,
   }) : super(
           id: id,
           triggerType: MBTriggerType.appOpening,
@@ -18,7 +17,7 @@ class MBAppOpeningTrigger extends MBTrigger {
 
   /// Initializes an app opening trigger with the data of the dictionary returned by the APIs.
   factory MBAppOpeningTrigger.fromDictionary(Map<String, dynamic> dictionary) {
-    String id = dictionary['id'];
+    String id = dictionary['id'] is String ? dictionary['id'] : '';
     int times = dictionary['times'] ?? 0;
 
     return MBAppOpeningTrigger(id: id, times: times);

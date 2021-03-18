@@ -48,27 +48,27 @@ class MBAutomationPushNotificationsManager {
       return;
     }
 
-    MBPushMessage pushMessage = message.pushMessage;
+    MBPushMessage pushMessage = message.pushMessage!;
 
     String id = _notificationIdentifierForMessage(message);
     String title = pushMessage.title;
     String body = pushMessage.body;
-    int badge = pushMessage.badge;
-    String launchImage = pushMessage.launchImage;
-    String sound = pushMessage.sound;
-    String media;
-    String mediaType;
+    int? badge = pushMessage.badge;
+    String? launchImage = pushMessage.launchImage;
+    String? sound = pushMessage.sound;
+    String? media;
+    String? mediaType;
     if (pushMessage.userInfo != null) {
-      String mediaUrl = pushMessage.userInfo['media_url'];
+      String? mediaUrl = pushMessage.userInfo!['media_url'];
       if (mediaUrl != null) {
-        mediaType = pushMessage.userInfo['media_type'];
-        File mediaFile = await _downloadImage(mediaUrl);
-        media = mediaFile.path;
+        mediaType = pushMessage.userInfo!['media_type'];
+        File? mediaFile = await _downloadImage(mediaUrl);
+        media = mediaFile?.path;
       }
     }
 
     DateTime date = DateTime.now();
-    if (message.sendAfterDays != null && message.sendAfterDays != 0) {
+    if (message.sendAfterDays != 0) {
       date = date.add(Duration(days: message.sendAfterDays));
     }
 
@@ -83,7 +83,7 @@ class MBAutomationPushNotificationsManager {
       media: media,
       mediaType: mediaType,
     );
-    if (result ?? false) {
+    if (result) {
       await _setMessageShowed(message);
     }
   }
@@ -91,12 +91,13 @@ class MBAutomationPushNotificationsManager {
   /// Downloads the image for the notification.
   /// @param media The url of the media.
   /// @returns A Future that completes with the File of the downloaded media.
-  static Future<File> _downloadImage(String media) async {
-    if (media != null) {
+  static Future<File?> _downloadImage(String media) async {
+    Uri? uri = Uri.tryParse(media);
+    if (uri == null) {
       return null;
     }
     final fileName = basename(media);
-    final response = await http.get(media);
+    final response = await http.get(uri);
     final documentDirectory = await getApplicationDocumentsDirectory();
     final file = File(join(documentDirectory.path, fileName));
     file.writeAsBytesSync(response.bodyBytes);
@@ -106,28 +107,24 @@ class MBAutomationPushNotificationsManager {
   /// The notification identifier string for the message passed.
   /// @param message The message for which the identifier will be created.
   static String _notificationIdentifierForMessage(MBMessage message) {
-    return 'mburger.automation.push.' + (message.id?.toString() ?? '');
+    return 'mburger.automation.push.' + (message.id.toString());
   }
 
   /// If a message has already been shoewd or not.
   /// @param The message to check.
   static Future<bool> _needsToShowMessage(MBMessage message) async {
     if (message.automationIsOn) {
-      if (message.endDate.millisecondsSinceEpoch < DateTime
-          .now()
-          .millisecondsSinceEpoch) {
+      if (message.endDate.millisecondsSinceEpoch <
+          DateTime.now().millisecondsSinceEpoch) {
         return false;
       }
     }
-    if (message.id == null) {
-      return false;
-    }
     Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String showedMessagesString = prefs.getString(_showedMessagesKey);
+    String? showedMessagesString = prefs.getString(_showedMessagesKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<String, dynamic>.from(json.decode(showedMessagesString));
+          Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
     return messageShowCount <= message.repeatTimes;
@@ -136,15 +133,12 @@ class MBAutomationPushNotificationsManager {
   /// Set a message as showed.
   /// @param The message to set as showed.
   static Future<void> _setMessageShowed(MBMessage message) async {
-    if (message.id == null) {
-      return;
-    }
     Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String showedMessagesString = prefs.getString(_showedMessagesKey);
+    String? showedMessagesString = prefs.getString(_showedMessagesKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<String, dynamic>.from(json.decode(showedMessagesString));
+          Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id] ?? 0;
     showedMessagesCount[message.id.toString()] = messageShowCount + 1;
@@ -154,15 +148,12 @@ class MBAutomationPushNotificationsManager {
   /// Unset a message as showed.
   /// @param The message to unset as showed.
   static Future<void> _unsetMessageShowed(MBMessage message) async {
-    if (message.id == null) {
-      return;
-    }
     Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String showedMessagesString = prefs.getString(_showedMessagesKey);
+    String? showedMessagesString = prefs.getString(_showedMessagesKey);
     if (showedMessagesString != null) {
       showedMessagesCount =
-      Map<String, dynamic>.from(json.decode(showedMessagesString));
+          Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
     showedMessagesCount[message.id.toString()] = max(0, messageShowCount - 1);

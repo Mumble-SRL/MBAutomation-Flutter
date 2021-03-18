@@ -26,13 +26,13 @@ class MBMessageSavingUtility {
     if (message.inAppMessage != null) {
       dictionary['inAppMessage'] =
           MBInAppMessageSavingUtility.jsonDictionaryForInAppMessage(
-              message.inAppMessage);
+              message.inAppMessage!);
     }
 
     if (message.pushMessage != null) {
       dictionary['push'] =
           MBPushMessageSavingUtility.jsonDictionaryForPushMessage(
-              message.pushMessage);
+              message.pushMessage!);
     }
 
     if (message.triggers != null) {
@@ -63,9 +63,9 @@ class MBMessageSavingUtility {
     int sendAfterDays = jsonDictionary['sendAfterDays'];
     int repeatTimes = jsonDictionary['repeatTimes'];
 
-    MBInAppMessage inAppMessage;
-    MBPushMessage pushMessage;
-    MBMessageTriggers triggers;
+    MBInAppMessage? inAppMessage;
+    MBPushMessage? pushMessage;
+    MBMessageTriggers? triggers;
 
     if (jsonDictionary['inAppMessage'] != null) {
       inAppMessage = MBInAppMessageSavingUtility.inAppMessageFromJsonDictionary(

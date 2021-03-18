@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
 
     MBPush.requestToken();
 
-    Map<String, dynamic> launchNotification = await MBPush.launchNotification();
+    Map<String, dynamic>? launchNotification = await MBPush.launchNotification();
     print(launchNotification);
   }
 
@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
             title: const Text('MBAutomation example app'),
           ),
           body: Center(
-            child: FlatButton(
+            child: TextButton(
               child: Text('Send Event'),
               onPressed: () => _sendEvent(),
             ),

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:mbautomation/tracking/model/mb_automation_view.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
@@ -14,17 +13,17 @@ class MBViewTrigger extends MBTrigger {
   final int secondsOnView;
 
   /// If the trigger has been completed this var will have the date the event has been completed.
-  DateTime completionDate;
+  DateTime? completionDate;
 
   /// Counter to keeps track of how many times an event has happened.
-  int numberOfTimes;
+  int? numberOfTimes;
 
   /// Initializes a view trigger with the data provided.
   MBViewTrigger({
-    @required String id,
-    @required this.view,
-    @required this.times,
-    @required this.secondsOnView,
+    required String id,
+    required this.view,
+    required this.times,
+    required this.secondsOnView,
   }) : super(
           id: id,
           triggerType: MBTriggerType.view,
@@ -81,7 +80,7 @@ class MBViewTrigger extends MBTrigger {
     if (completionDate == null) {
       return false;
     }
-    return completionDate.isBefore(DateTime.now());
+    return completionDate!.isBefore(DateTime.now());
   }
 
 //region json
@@ -94,7 +93,7 @@ class MBViewTrigger extends MBTrigger {
 
     if (completionDate != null) {
       dictionary['completionDate'] =
-          completionDate.millisecondsSinceEpoch ~/ 1000;
+          completionDate!.millisecondsSinceEpoch ~/ 1000;
     }
 
     if (numberOfTimes != null) {
@@ -129,6 +128,7 @@ class MBViewTrigger extends MBTrigger {
 
     return trigger;
   }
+
 //endregion
 
 //region update trigger

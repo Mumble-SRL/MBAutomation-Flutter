@@ -21,7 +21,7 @@ class MBPushMessageSavingUtility {
       dictionary['sound'] = pushMessage.sound;
     }
     if (pushMessage.launchImage != null) {
-      dictionary['c'] = pushMessage.launchImage;
+      dictionary['launchImage'] = pushMessage.launchImage;
     }
     if (pushMessage.userInfo != null) {
       dictionary['userInfo'] = pushMessage.userInfo;
@@ -39,11 +39,11 @@ class MBPushMessageSavingUtility {
     String body = jsonDictionary['body'];
     bool sent = jsonDictionary['sent'];
 
-    int badge = jsonDictionary['badge'];
-    String sound = jsonDictionary['sound'];
-    String launchImage = jsonDictionary['body'];
+    int? badge = jsonDictionary['badge'];
+    String? sound = jsonDictionary['sound'];
+    String? launchImage = jsonDictionary['launchImage'];
 
-    Map<String, dynamic> userInfo = jsonDictionary['userInfo'];
+    Map<String, dynamic>? userInfo = jsonDictionary['userInfo'];
 
     return MBPushMessage(
       id: id,

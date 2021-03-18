@@ -34,13 +34,12 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   MBAutomation({
     this.trackingEnabled: true,
     int eventsTimerTime: 10,
-  }) {
+  }) : _eventsTimerTime = eventsTimerTime {
     MBAutomationDatabase.initDb();
     MBAutomationMessagesManager.startMessageTimer(time: 30);
-    _eventsTimerTime = eventsTimerTime;
     MBAutomationFlutterPlugin.initializeMethodCall();
     MBAutomationTrackingManager.shared.timerTime = eventsTimerTime;
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
   }
 
 //region plugin
@@ -59,7 +58,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// @param value: The value of the tag, `null` if the tag has been deleted.
   void tagChanged(
     String tag, {
-    String value,
+    String? value,
   }) {
     MBAutomationMessagesManager.tagChanged(
       tag,
@@ -111,7 +110,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// @param metadata Optional metadata associated with the view.
   static Future<void> trackScreenView(
     String view, {
-    Map<String, dynamic> metadata,
+    Map<String, dynamic>? metadata,
   }) async {
     MBAutomationView automationView =
         MBAutomationView(view: view, metadata: metadata);
@@ -125,8 +124,8 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// @param metadata Additional metadata sent with the event
   static Future<void> sendEvent(
     String event, {
-    String name,
-    Map<String, dynamic> metadata,
+    String? name,
+    Map<String, dynamic>? metadata,
   }) async {
     MBAutomationEvent automationEvent = MBAutomationEvent(
       event: event,

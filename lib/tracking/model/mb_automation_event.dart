@@ -1,19 +1,18 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 /// An event of MBAutomation.
 class MBAutomationEvent {
   /// The id of the event.
-  final int id;
+  final int? id;
 
   /// The event name.
   final String event;
 
   /// The name of the event.
-  final String name;
+  final String? name;
 
   /// Additional metadata for the event.
-  final Map<String, dynamic> metadata;
+  final Map<String, dynamic>? metadata;
 
   /// Timestamp of the event.
   final DateTime timestamp;
@@ -23,7 +22,7 @@ class MBAutomationEvent {
   /// @param name The name of the event.
   /// @param metadata Additional metadata for the event.
   MBAutomationEvent({
-    @required this.event,
+    required this.event,
     this.name,
     this.metadata,
   })  : id = null,
@@ -31,30 +30,30 @@ class MBAutomationEvent {
 
   /// Initializes an event with all the data. Used when initializing the event from DB data.
   MBAutomationEvent._withAllData({
-    @required this.id,
-    @required this.event,
-    @required this.name,
-    @required this.metadata,
-    @required this.timestamp,
+    required this.id,
+    required this.event,
+    required this.name,
+    required this.metadata,
+    required this.timestamp,
   });
 
   /// Initializes an event with the `Map` retrieved from the DB.
   /// @param dbData data retrieved from the DB.
   factory MBAutomationEvent.fromDbData({
-    @required Map<String, dynamic> dbData,
+    required Map<String, dynamic> dbData,
   }) {
-    int id = dbData['id'];
+    int? id = dbData['id'];
     String event = dbData['event'];
-    String name = dbData['name'];
+    String? name = dbData['name'];
 
-    Map<String, dynamic> metadata;
-    String metadataString = dbData['metadata'];
+    Map<String, dynamic>? metadata;
+    String? metadataString = dbData['metadata'];
     if (metadataString != null) {
       metadata = json.decode(metadataString);
     } else {
       metadata = null;
     }
-    int timestampInt = dbData['timestamp'];
+    int timestampInt = dbData['timestamp'] ?? 0;
     DateTime timestamp =
         DateTime.fromMillisecondsSinceEpoch(timestampInt * 1000);
     return MBAutomationEvent._withAllData(

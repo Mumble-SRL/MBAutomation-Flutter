@@ -6,19 +6,20 @@ import 'package:mbautomation/triggers/mb_message_triggers.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 import 'package:mbautomation/triggers/mb_view_trigger.dart';
 import 'package:mbmessages/messages/mbmessage.dart';
+import 'package:collection/collection.dart';
 
 /// This class manages the view triggers, it's informed when a screen is viewed and it informs all the MBViewTrigger triggers.
 class MBAutomationMessagesViewManager {
   /// Timer to set a screen as viewed after the seconds specified in the trigger.
-  static Timer _timer;
+  static Timer? _timer;
 
   /// Function called by `MBAutomationMessagesManager` when a screen is viewed.
   /// @param view The view that has been viewed.
   static Future<void> screenViewed(MBAutomationView view) async {
     if (_timer != null) {
-      _timer.cancel();
+      _timer?.cancel();
     }
-    List<MBMessage> messagesSaved =
+    List<MBMessage>? messagesSaved =
         await MBAutomationMessagesManager.savedMessages();
     if (messagesSaved == null) {
       return;
@@ -31,25 +32,23 @@ class MBAutomationMessagesViewManager {
     for (MBMessage message in messagesSaved) {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
-        if (messageTriggers.triggers != null) {
-          List<MBViewTrigger> viewTriggers =
-              List.castFrom<MBTrigger, MBViewTrigger>(messageTriggers.triggers
-                  .where((t) => t is MBViewTrigger)
-                  .toList());
-          for (MBViewTrigger viewTrigger in viewTriggers) {
-            bool result = viewTrigger.screenViewed(view);
-            if (result) {
-              somethingChanged = true;
-              if ((viewTrigger.numberOfTimes ?? 0) >= viewTrigger.times) {
-                int index = messageTriggers.triggers.indexOf(viewTrigger);
-                if ((viewTrigger.secondsOnView ?? 0) != 0) {
-                  _timer = Timer(
-                    Duration(seconds: viewTrigger.secondsOnView),
-                    () => _setTriggerCompleted(message.id, index),
-                  );
-                } else {
-                  _setTriggerCompleted(message.id, index);
-                }
+        List<MBViewTrigger> viewTriggers =
+            List.castFrom<MBTrigger, MBViewTrigger>(messageTriggers.triggers
+                .where((t) => t is MBViewTrigger)
+                .toList());
+        for (MBViewTrigger viewTrigger in viewTriggers) {
+          bool result = viewTrigger.screenViewed(view);
+          if (result) {
+            somethingChanged = true;
+            if ((viewTrigger.numberOfTimes ?? 0) >= viewTrigger.times) {
+              int index = messageTriggers.triggers.indexOf(viewTrigger);
+              if ((viewTrigger.secondsOnView) != 0) {
+                _timer = Timer(
+                  Duration(seconds: viewTrigger.secondsOnView),
+                  () => _setTriggerCompleted(message.id, index),
+                );
+              } else {
+                _setTriggerCompleted(message.id, index);
               }
             }
           }
@@ -71,7 +70,7 @@ class MBAutomationMessagesViewManager {
     int messageId,
     int triggerIndex,
   ) async {
-    List<MBMessage> messagesSaved =
+    List<MBMessage>? messagesSaved =
         await MBAutomationMessagesManager.savedMessages();
     if (messagesSaved == null) {
       return;
@@ -80,8 +79,8 @@ class MBAutomationMessagesViewManager {
       return;
     }
 
-    MBMessage message =
-        messagesSaved.firstWhere((m) => m.id == messageId, orElse: () => null);
+    MBMessage? message =
+        messagesSaved.firstWhereOrNull((m) => m.id == messageId);
 
     if (message == null) {
       return;
@@ -89,7 +88,7 @@ class MBAutomationMessagesViewManager {
 
     if (message.triggers is MBMessageTriggers) {
       MBMessageTriggers messageTriggers = message.triggers;
-      if (triggerIndex < messageTriggers.triggers?.length ?? 0) {
+      if (triggerIndex < messageTriggers.triggers.length) {
         MBTrigger trigger = messageTriggers.triggers[triggerIndex];
         if (trigger is MBViewTrigger) {
           trigger.setCompleted();

@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:collection/collection.dart';
 import 'package:mbautomation/triggers/managers/mb_automation_messages_manager.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
@@ -21,19 +21,18 @@ class MBMessageTriggers {
 
   /// Initialized triggers for a message with the data passed.
   MBMessageTriggers({
-    @required this.method,
-    @required this.triggers,
+    required this.method,
+    required this.triggers,
   });
 
   /// Initializes message triggers with the data of the dictionary returned by the APIs.
-  MBMessageTriggers.fromDictionary(Map<String, dynamic> dictionary) {
+  factory MBMessageTriggers.fromDictionary(Map<String, dynamic> dictionary) {
     String methodString = dictionary['method'];
+    MBMessageTriggersMethod method = MBMessageTriggersMethod.all;
     if (methodString == 'all') {
       method = MBMessageTriggersMethod.all;
     } else if (methodString == 'any') {
       method = MBMessageTriggersMethod.any;
-    } else {
-      method = MBMessageTriggersMethod.all;
     }
 
     List<MBTrigger> triggers = [];
@@ -46,16 +45,17 @@ class MBMessageTriggers {
         }
       }
     }
-    this.triggers = triggers;
+
+    return MBMessageTriggers(
+      method: method,
+      triggers: triggers,
+    );
   }
 
   /// If the trigger is valid, based on the triggers method and all the triggers.
   /// @param fromAppStartup If the check has been triggered at startup.
   /// @returns If the trigger is valid.
   Future<bool> isValid(bool fromAppStartup) async {
-    if (triggers == null) {
-      return true;
-    }
     for (MBTrigger trigger in triggers) {
       bool triggerIsValid = await trigger.isValid(fromAppStartup);
       switch (method) {
@@ -74,10 +74,13 @@ class MBMessageTriggers {
   }
 
   /// Creates and initializes the trigger with a saved JSON dictionary.
-  MBMessageTriggers.fromJsonDictionary(Map<String, dynamic> dictionary) {
+  factory MBMessageTriggers.fromJsonDictionary(
+      Map<String, dynamic> dictionary) {
     String methodString = dictionary['method'];
-    method = MBMessageTriggers._triggersMethodFromString(methodString);
+    MBMessageTriggersMethod method =
+        MBMessageTriggers._triggersMethodFromString(methodString);
 
+    List<MBTrigger> triggers = [];
     if (dictionary['triggers'] != null) {
       if (dictionary['triggers'] is List) {
         List<Map<String, dynamic>> triggersDictionaries =
@@ -89,6 +92,10 @@ class MBMessageTriggers {
             .toList();
       }
     }
+    return MBMessageTriggers(
+      method: method,
+      triggers: triggers,
+    );
   }
 
   /// Converts the trigger object to a JSON map.
@@ -97,11 +104,7 @@ class MBMessageTriggers {
       'method': _stringFromTriggersMethod(method),
     };
 
-    if (triggers != null) {
-      dictionary['triggers'] =
-          triggers.map((e) => e.toJsonDictionary()).toList();
-    }
-
+    dictionary['triggers'] = triggers.map((e) => e.toJsonDictionary()).toList();
     return dictionary;
   }
 
@@ -110,10 +113,8 @@ class MBMessageTriggers {
   void updateTriggers(MBMessageTriggers newTriggers) {
     List<MBTrigger> updatedTriggers = [];
     for (MBTrigger newTrigger in newTriggers.triggers) {
-      MBTrigger trigger = triggers.firstWhere(
-        (t) => t.id == newTrigger.id,
-        orElse: () => null,
-      );
+      MBTrigger? trigger =
+          triggers.firstWhereOrNull((t) => t.id == newTrigger.id);
       if (trigger != null) {
         MBTrigger updatedTrigger = trigger.updatedTrigger(newTrigger);
         updatedTriggers.add(updatedTrigger);
@@ -130,10 +131,8 @@ class MBMessageTriggers {
     switch (triggersMethodString) {
       case 'all':
         return MBMessageTriggersMethod.all;
-        break;
       case 'any':
         return MBMessageTriggersMethod.any;
-        break;
     }
     return MBMessageTriggersMethod.all;
   }
@@ -142,12 +141,9 @@ class MBMessageTriggers {
     switch (triggersMethod) {
       case MBMessageTriggersMethod.all:
         return 'all';
-        break;
       case MBMessageTriggersMethod.any:
         return 'any';
-        break;
     }
-    return 'all';
   }
 //endregion
 
