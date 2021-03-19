@@ -18,7 +18,12 @@ class MBAppOpeningTrigger extends MBTrigger {
   /// Initializes an app opening trigger with the data of the dictionary returned by the APIs.
   factory MBAppOpeningTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] is String ? dictionary['id'] : '';
-    int times = dictionary['times'] ?? 0;
+    int times = 0;
+    if (dictionary['times'] is String) {
+      times = int.tryParse(dictionary['times']) ?? 0;
+    } else if (dictionary['times'] is int) {
+      times = dictionary['times'];
+    }
 
     return MBAppOpeningTrigger(id: id, times: times);
   }
