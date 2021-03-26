@@ -12,6 +12,7 @@ class MBInAppMessageSavingUtility {
     Map<String, dynamic> dictionary = {
       'id': inAppMessage.id,
       'style': _stringForInAppMessageStyle(inAppMessage.style),
+      'isBlocking': inAppMessage.isBlocking,
       'duration': inAppMessage.duration,
     };
     if (inAppMessage.title != null) {
@@ -47,6 +48,7 @@ class MBInAppMessageSavingUtility {
       Map<String, dynamic> jsonDictionary) {
     int id = jsonDictionary['id'];
     String styleString = jsonDictionary['style'];
+    bool isBlocking = jsonDictionary['isBlocking'];
     double duration = jsonDictionary['duration'];
 
     String? title = jsonDictionary['title'];
@@ -75,6 +77,7 @@ class MBInAppMessageSavingUtility {
     return MBInAppMessage(
       id: id,
       style: _inAppMessageStyleForString(styleString),
+      isBlocking: isBlocking,
       duration: duration,
       title: title,
       titleColor: titleColor != null ? Color(titleColor) : null,

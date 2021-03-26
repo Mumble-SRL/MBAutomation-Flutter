@@ -13,10 +13,10 @@
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.1" />
       <root url="file://$PROJECT_DIR$" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.5" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/mbmessages-2.0.0-beta" />
       <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/flutter_secure_storage-4.1.0" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/mbaudience-2.0.0-beta" />
-      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/permission_handler-6.1.0" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/mbaudience-2.0.0-beta.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/permission_handler-6.1.1" />
+      <root url="file://$USER_HOME$/.pub-cache/hosted/pub.dartlang.org/mbmessages-2.0.0-beta.1" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
