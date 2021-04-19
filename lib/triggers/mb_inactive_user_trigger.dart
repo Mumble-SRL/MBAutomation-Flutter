@@ -19,7 +19,12 @@ class MBInactiveUserTrigger extends MBTrigger {
   factory MBInactiveUserTrigger.fromDictionary(
       Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
-    int days = dictionary['days'] ?? 0;
+    int days = 0;
+    if (dictionary['days'] is int) {
+      days = dictionary['days'];
+    } else if (dictionary['days'] is String) {
+      days = int.tryParse(dictionary['days'] as String) ?? 0;
+    }
 
     return MBInactiveUserTrigger(
       id: id,
