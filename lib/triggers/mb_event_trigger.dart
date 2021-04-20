@@ -113,7 +113,12 @@ class MBEventTrigger extends MBTrigger {
   factory MBEventTrigger.fromJsonDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
     String event = dictionary['event'] ?? '';
-    int times = dictionary['times'] ?? 0;
+    int times = 0;
+    if (dictionary['times'] is String) {
+      times = int.tryParse(dictionary['times']) ?? 0;
+    } else if (dictionary['times'] is int) {
+      times = dictionary['times'];
+    }
     Map<String, dynamic>? metadata = dictionary['metadata'];
 
     MBEventTrigger trigger = MBEventTrigger(
