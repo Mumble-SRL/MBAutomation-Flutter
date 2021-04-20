@@ -22,11 +22,12 @@ import 'package:mbmessages/messages/mbmessage.dart';
 import 'package:mburger/mb_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:collection/collection.dart';
 
 /// Main class that manages messages and triggers, responds to external events and updates the triggers.
 class MBAutomationMessagesManager {
   /// The tmer used to check message/triggers periodically.
-  static Timer timer;
+  static Timer? timer;
 
 //region triggers
   /// Creates and initializes triggers object to the messages fetched.
@@ -34,9 +35,6 @@ class MBAutomationMessagesManager {
   /// This variable is replaced with a MBMessageTriggers object.
   /// @param messages A list of messages that will be populated with MBMessageTriggers objects.
   static void setTriggersToMessages(List<MBMessage> messages) {
-    if (messages == null) {
-      return;
-    }
     for (MBMessage message in messages) {
       if (message.automationIsOn) {
         if (message.triggers != null &&
@@ -58,27 +56,19 @@ class MBAutomationMessagesManager {
     switch (triggerType) {
       case MBTriggerType.location:
         return MBLocationTrigger.fromJsonDictionary(jsonDictionary);
-        break;
       case MBTriggerType.appOpening:
         return MBAppOpeningTrigger.fromJsonDictionary(jsonDictionary);
-        break;
       case MBTriggerType.view:
         return MBViewTrigger.fromJsonDictionary(jsonDictionary);
-        break;
       case MBTriggerType.inactiveUser:
         return MBInactiveUserTrigger.fromJsonDictionary(jsonDictionary);
-        break;
       case MBTriggerType.event:
         return MBEventTrigger.fromJsonDictionary(jsonDictionary);
-        break;
       case MBTriggerType.tagChange:
         return MBTagChangeTrigger.fromJsonDictionary(jsonDictionary);
-        break;
       case MBTriggerType.unknown:
         return MBTrigger.fromJsonDictionary(jsonDictionary);
-        break;
     }
-    return MBTrigger.fromJsonDictionary(jsonDictionary);
   }
 
   /// Creates a `MBTrigger` object from the dictionary returned by the APIs, based on the type.
@@ -89,31 +79,26 @@ class MBAutomationMessagesManager {
     switch (type) {
       case 'location':
         return MBLocationTrigger.fromDictionary(dictionary);
-        break;
       case 'app_opening':
         return MBAppOpeningTrigger.fromDictionary(dictionary);
-        break;
       case 'view':
         return MBViewTrigger.fromDictionary(dictionary);
-        break;
       case 'inactive_user':
         return MBInactiveUserTrigger.fromDictionary(dictionary);
-        break;
       case 'event':
         return MBEventTrigger.fromDictionary(dictionary);
-        break;
       case 'tag_change':
         return MBTagChangeTrigger.fromDictionary(dictionary);
-        break;
     }
     return MBTrigger.fromDictionary(dictionary);
   }
+
 //endregion
 
 //region timer
   /// Starts the timer to check periodically messages.
   /// @param time The time interval in seconds.
-  static startMessageTimer({@required int time}) {
+  static startMessageTimer({required int time}) {
     timer = Timer.periodic(
       Duration(seconds: time),
       (timer) => checkMessages(fromStartup: false),
@@ -122,9 +107,9 @@ class MBAutomationMessagesManager {
 
   /// Restarts the timer with a new time.
   /// @param time The time interval in seconds.
-  static messageTimerChanged({@required int time}) {
+  static messageTimerChanged({required int time}) {
     if (timer != null) {
-      timer.cancel();
+      timer?.cancel();
       timer = null;
     }
     timer = Timer.periodic(
@@ -132,13 +117,14 @@ class MBAutomationMessagesManager {
       (timer) => checkMessages(fromStartup: false),
     );
   }
+
 //endregion
 
   /// Function called when an event happens.
   /// It checks the saved messages and tells all the `MBEventTrigger` triggers that this event happened.
   /// @param event The event that happened.
   static eventHappened(MBAutomationEvent event) async {
-    List<MBMessage> messagesSaved = await savedMessages();
+    List<MBMessage>? messagesSaved = await savedMessages();
     if (messagesSaved == null) {
       return;
     }
@@ -150,16 +136,14 @@ class MBAutomationMessagesManager {
     for (MBMessage message in messagesSaved) {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
-        if (messageTriggers.triggers != null) {
-          List<MBEventTrigger> eventsTriggers =
-              List.castFrom<MBTrigger, MBEventTrigger>(messageTriggers.triggers
-                  .where((t) => t is MBEventTrigger)
-                  .toList());
-          for (MBEventTrigger eventTrigger in eventsTriggers) {
-            bool triggerChanged = await eventTrigger.eventHappened(event);
-            if (triggerChanged) {
-              somethingChanged = true;
-            }
+        List<MBEventTrigger> eventsTriggers =
+            List.castFrom<MBTrigger, MBEventTrigger>(messageTriggers.triggers
+                .where((t) => t is MBEventTrigger)
+                .toList());
+        for (MBEventTrigger eventTrigger in eventsTriggers) {
+          bool triggerChanged = await eventTrigger.eventHappened(event);
+          if (triggerChanged) {
+            somethingChanged = true;
           }
         }
       }
@@ -185,8 +169,8 @@ class MBAutomationMessagesManager {
   /// It checks the saved messages and tells all the `MBTagChange` triggers that this tag has changed.
   /// @param tag The tag that changed.
   /// @param value The new value of the tag.
-  static Future<void> tagChanged(String tag, String value) async {
-    List<MBMessage> messagesSaved = await savedMessages();
+  static Future<void> tagChanged(String tag, String? value) async {
+    List<MBMessage>? messagesSaved = await savedMessages();
     if (messagesSaved == null) {
       return;
     }
@@ -198,24 +182,22 @@ class MBAutomationMessagesManager {
     for (MBMessage message in messagesSaved) {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
-        if (messageTriggers.triggers != null) {
-          List<MBTagChangeTrigger> tagTriggers =
-              List.castFrom<MBTrigger, MBTagChangeTrigger>(messageTriggers
-                  .triggers
-                  .where((t) => t is MBTagChangeTrigger)
-                  .toList());
-          for (MBTagChangeTrigger tagTrigger in tagTriggers) {
-            MBTriggerChangedStatus result = tagTrigger.tagChanged(tag, value);
-            if (result != MBTriggerChangedStatus.unchanged) {
-              somethingChanged = true;
-            }
+        List<MBTagChangeTrigger> tagTriggers =
+            List.castFrom<MBTrigger, MBTagChangeTrigger>(messageTriggers
+                .triggers
+                .where((t) => t is MBTagChangeTrigger)
+                .toList());
+        for (MBTagChangeTrigger tagTrigger in tagTriggers) {
+          MBTriggerChangedStatus result = tagTrigger.tagChanged(tag, value);
+          if (result != MBTriggerChangedStatus.unchanged) {
+            somethingChanged = true;
+          }
 
-            if (result == MBTriggerChangedStatus.invalid) {
-              if (message.messageType == MBMessageType.push &&
-                  (message.sendAfterDays ?? 0) != 0) {
-                MBAutomationPushNotificationsManager
-                    .cancelPushNotificationForMessage(message);
-              }
+          if (result == MBTriggerChangedStatus.invalid) {
+            if (message.messageType == MBMessageType.push &&
+                message.sendAfterDays != 0) {
+              MBAutomationPushNotificationsManager
+                  .cancelPushNotificationForMessage(message);
             }
           }
         }
@@ -239,7 +221,7 @@ class MBAutomationMessagesManager {
     double latitude,
     double longitude,
   ) async {
-    List<MBMessage> messagesSaved = await savedMessages();
+    List<MBMessage>? messagesSaved = await savedMessages();
     if (messagesSaved == null) {
       return;
     }
@@ -247,28 +229,25 @@ class MBAutomationMessagesManager {
       return;
     }
 
-    _Location lastLocation = await _lastLocation();
+    _Location? lastLocation = await _lastLocation();
 
     bool somethingChanged = false;
     for (MBMessage message in messagesSaved) {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
-        if (messageTriggers.triggers != null) {
-          List<MBLocationTrigger> locationTriggers =
-              List.castFrom<MBTrigger, MBLocationTrigger>(messageTriggers
-                  .triggers
-                  .where((t) => t is MBLocationTrigger)
-                  .toList());
-          for (MBLocationTrigger locationTrigger in locationTriggers) {
-            bool triggerChanged = locationTrigger.locationDataUpdated(
-              latitude: latitude,
-              longitude: longitude,
-              lastLatitude: lastLocation?.latitude,
-              lastLongitude: lastLocation?.longitude,
-            );
-            if (triggerChanged) {
-              somethingChanged = true;
-            }
+        List<MBLocationTrigger> locationTriggers =
+            List.castFrom<MBTrigger, MBLocationTrigger>(messageTriggers.triggers
+                .where((t) => t is MBLocationTrigger)
+                .toList());
+        for (MBLocationTrigger locationTrigger in locationTriggers) {
+          bool triggerChanged = locationTrigger.locationDataUpdated(
+            latitude: latitude,
+            longitude: longitude,
+            lastLatitude: lastLocation?.latitude,
+            lastLongitude: lastLocation?.longitude,
+          );
+          if (triggerChanged) {
+            somethingChanged = true;
           }
         }
       }
@@ -289,14 +268,14 @@ class MBAutomationMessagesManager {
 
   /// The last location seen by MBAutomation.
   /// @returns The last location saved, if present.
-  static Future<_Location> _lastLocation() async {
+  static Future<_Location?> _lastLocation() async {
     String lastLocationLatKey =
         'com.mumble.mburger.automation.lastLocation.lat';
     String lastLocationLngKey =
         'com.mumble.mburger.automation.lastLocation.lng';
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    double lat = prefs.getDouble(lastLocationLatKey);
-    double lng = prefs.getDouble(lastLocationLngKey);
+    double? lat = prefs.getDouble(lastLocationLatKey);
+    double? lng = prefs.getDouble(lastLocationLngKey);
     if (lat != null && lng != null) {
       return _Location(lat, lng);
     }
@@ -311,9 +290,9 @@ class MBAutomationMessagesManager {
     String lastLocationLngKey =
         'com.mumble.mburger.automation.lastLocation.lng';
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    double lat = location?.latitude;
-    double lng = location?.longitude;
-    if (lat != null && lng != null && lat != 0 && lng != 0) {
+    double lat = location.latitude;
+    double lng = location.longitude;
+    if (lat != 0 && lng != 0) {
       await prefs.setDouble(lastLocationLatKey, lat);
       await prefs.setDouble(lastLocationLngKey, lng);
     } else {
@@ -324,8 +303,8 @@ class MBAutomationMessagesManager {
 
   /// Checks the saved messages and show them if they need to be showed.
   /// @param fromStartup If the check has been triggered at app startup.
-  static Future<void> checkMessages({bool fromStartup}) async {
-    List<MBMessage> messagesSaved = await savedMessages();
+  static Future<void> checkMessages({bool fromStartup: false}) async {
+    List<MBMessage>? messagesSaved = await savedMessages();
     if (messagesSaved == null) {
       return;
     }
@@ -337,8 +316,24 @@ class MBAutomationMessagesManager {
       if (message.triggers != null) {
         if (message.triggers is MBMessageTriggers) {
           MBMessageTriggers messageTriggers = message.triggers;
-          bool triggerIsValid =
-              await messageTriggers.isValid(fromStartup) ?? false;
+          bool triggerIsValid = await messageTriggers.isValid(fromStartup);
+          if (message.repeatTimes > 0) {
+            bool hasAppOpeningTriggers = messageTriggers.triggers
+                    .firstWhereOrNull((t) => t is MBAppOpeningTrigger) !=
+                null;
+            if (!(hasAppOpeningTriggers && fromStartup)) {
+              Map<String, dynamic>? savedTriggers =
+                  await _savedMessageTriggers(message);
+              if (savedTriggers != null) {
+                Map<String, dynamic> triggersDictionary =
+                    messageTriggers.toJsonDictionary();
+                if (mapEquals(savedTriggers, triggersDictionary)) {
+                  continue;
+                }
+              }
+            }
+            await _saveMessageTriggers(message);
+          }
           if (triggerIsValid) {
             messagesToShow.add(message);
           }
@@ -357,7 +352,7 @@ class MBAutomationMessagesManager {
               m.messageType == MBMessageType.push && m.pushMessage != null)
           .toList();
       if (inAppMessages.length != 0) {
-        MBMessages plugin = MBManager.shared.pluginOf<MBMessages>();
+        MBMessages? plugin = MBManager.shared.pluginOf<MBMessages>();
         if (plugin != null) {
           MBInAppMessageManager.presentMessages(
             messages: inAppMessages,
@@ -386,14 +381,12 @@ class MBAutomationMessagesManager {
   }) async {
     String path = await _messagesPath();
     File f = File(path);
-    List<MBMessage> messagesSaved = await savedMessages();
+    List<MBMessage>? messagesSaved = await savedMessages();
     List<MBMessage> messagesToSave = [];
     if (fromFetch) {
       for (MBMessage message in messages) {
-        MBMessage savedMessage = messagesSaved.firstWhere(
-          (m) => m.id == message.id,
-          orElse: () => null,
-        );
+        MBMessage? savedMessage =
+            messagesSaved?.firstWhereOrNull((m) => m.id == message.id);
         if (savedMessage != null) {
           if (savedMessage.triggers != null && message.triggers != null) {
             if (savedMessage.triggers is MBMessageTriggers &&
@@ -405,6 +398,8 @@ class MBAutomationMessagesManager {
           } else if (savedMessage.triggers == null &&
               message.triggers != null) {
             savedMessage.triggers = message.triggers;
+            savedMessage.sendAfterDays = message.sendAfterDays;
+            savedMessage.repeatTimes = message.repeatTimes;
           }
           messagesToSave.add(savedMessage);
         } else {
@@ -426,20 +421,14 @@ class MBAutomationMessagesManager {
 
   /// Returns the saved messages.
   /// @returns A future that completes with the list of saved messages.
-  static Future<List<MBMessage>> savedMessages() async {
+  static Future<List<MBMessage>?> savedMessages() async {
     String path = await _messagesPath();
-    if (path == null) {
-      return [];
-    }
     File f = File(path);
     bool fileExists = await f.exists();
     if (!fileExists) {
       return [];
     }
     String contents = await f.readAsString();
-    if (contents == null) {
-      return [];
-    }
     List<dynamic> list = json.decode(contents);
     List<MBMessage> messages = [];
     for (dynamic messageDict in list) {
@@ -451,12 +440,54 @@ class MBAutomationMessagesManager {
     return messages;
   }
 
+  static Future<void> _saveMessageTriggers(MBMessage message) async {
+    String path = await _triggersPath(message);
+    if (message.triggers == null) {
+      return;
+    }
+    File f = File(path);
+    bool fileExists = await f.exists();
+    if (!fileExists) {
+      return;
+    }
+    if (message.triggers is MBMessageTriggers) {
+      Map<String, dynamic> triggers =
+          (message.triggers as MBMessageTriggers).toJsonDictionary();
+      String jsonString = json.encode(triggers);
+      if (!(await f.exists())) {
+        await f.create(recursive: true);
+      }
+      await f.writeAsString(jsonString);
+    }
+  }
+
+  static Future<Map<String, dynamic>?> _savedMessageTriggers(
+      MBMessage message) async {
+    String path = await _triggersPath(message);
+    File f = File(path);
+    bool fileExists = await f.exists();
+    if (!fileExists) {
+      return null;
+    }
+    String contents = await f.readAsString();
+    Map<String, dynamic> dictionary = json.decode(contents);
+    return dictionary;
+  }
+
   /// The path in which messages will be saved.
   static Future<String> _messagesPath() async {
     final directory = await getApplicationDocumentsDirectory();
     String file = 'mb_automation_messages_f.json';
     return '${directory.path}/$file';
   }
+
+  static Future<String> _triggersPath(MBMessage message) async {
+    final directory = await getApplicationDocumentsDirectory();
+    String file =
+        'mb_automation_messages_' + message.id.toString() + '_triggers.json';
+    return '${directory.path}/$file';
+  }
+
 //endregion
 
 }

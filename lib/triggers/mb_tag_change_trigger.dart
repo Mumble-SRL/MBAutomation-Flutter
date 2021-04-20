@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
 /// Enum used to return the new trigger status when a tag changes.
@@ -35,14 +34,14 @@ class MBTagChangeTrigger extends MBTrigger {
   final MBTagChangeOperator tagChangeOperator;
 
   /// The date of completion of this trigger.
-  DateTime completionDate;
+  DateTime? completionDate;
 
   /// Initializes a tag change trigger with the data provided.
   MBTagChangeTrigger({
-    @required String id,
-    @required this.tag,
-    @required this.value,
-    @required this.tagChangeOperator,
+    required String id,
+    required this.tag,
+    required this.value,
+    required this.tagChangeOperator,
   }) : super(
           id: id,
           triggerType: MBTriggerType.tagChange,
@@ -52,7 +51,7 @@ class MBTagChangeTrigger extends MBTrigger {
   factory MBTagChangeTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
     String tag = dictionary['tag'] ?? '';
-    String value = dictionary['value'];
+    String value = dictionary['value'] ?? '';
     String operatorString = dictionary['operator'];
 
     return MBTagChangeTrigger(
@@ -68,11 +67,14 @@ class MBTagChangeTrigger extends MBTrigger {
   /// @param tag The tag that has changed.
   /// @param value The new value of the tag.
   /// @returns The new trigger status (unchanged, valid, invalid).
-  MBTriggerChangedStatus tagChanged(String tag, String value) {
+  MBTriggerChangedStatus tagChanged(
+    String tag,
+    String? value,
+  ) {
     if (tag != this.tag) {
       return MBTriggerChangedStatus.unchanged;
     }
-    String newValue = value;
+    String? newValue = value;
     if (tagChangeOperator == MBTagChangeOperator.equal) {
       if (newValue == this.value) {
         completionDate = DateTime.now();
@@ -101,7 +103,7 @@ class MBTagChangeTrigger extends MBTrigger {
     if (completionDate == null) {
       return false;
     }
-    return completionDate.isBefore(DateTime.now());
+    return completionDate!.isBefore(DateTime.now());
   }
 
 //region json
@@ -115,7 +117,7 @@ class MBTagChangeTrigger extends MBTrigger {
 
     if (completionDate != null) {
       dictionary['completionDate'] =
-          completionDate.millisecondsSinceEpoch ~/ 1000;
+          completionDate!.millisecondsSinceEpoch ~/ 1000;
     }
 
     return dictionary;
@@ -143,6 +145,7 @@ class MBTagChangeTrigger extends MBTrigger {
 
     return trigger;
   }
+
 //endregion
 
 //region operator-string conversion
@@ -150,12 +153,9 @@ class MBTagChangeTrigger extends MBTrigger {
     switch (operator) {
       case MBTagChangeOperator.equal:
         return '=';
-        break;
       case MBTagChangeOperator.notEqual:
         return '!=';
-        break;
     }
-    return '=';
   }
 
   static MBTagChangeOperator _tagChangeOperatorFromString(
@@ -163,10 +163,8 @@ class MBTagChangeTrigger extends MBTrigger {
     switch (operatorString) {
       case '=':
         return MBTagChangeOperator.equal;
-        break;
       case '!=':
         return MBTagChangeOperator.notEqual;
-        break;
     }
     return MBTagChangeOperator.notEqual;
   }

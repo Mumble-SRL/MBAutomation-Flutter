@@ -16,22 +16,24 @@ class MBMessageSavingUtility {
       'title': message.title,
       'messageDescription': message.messageDescription,
       'type': _stringForMessageType(message.messageType),
+      'createdAt': message.createdAt.millisecondsSinceEpoch ~/ 1000,
       'startDate': message.startDate.millisecondsSinceEpoch ~/ 1000,
       'endDate': message.endDate.millisecondsSinceEpoch ~/ 1000,
       'automationIsOn': message.automationIsOn,
       'sendAfterDays': message.sendAfterDays,
+      'repeatTimes': message.repeatTimes,
     };
 
     if (message.inAppMessage != null) {
       dictionary['inAppMessage'] =
           MBInAppMessageSavingUtility.jsonDictionaryForInAppMessage(
-              message.inAppMessage);
+              message.inAppMessage!);
     }
 
     if (message.pushMessage != null) {
       dictionary['push'] =
           MBPushMessageSavingUtility.jsonDictionaryForPushMessage(
-              message.pushMessage);
+              message.pushMessage!);
     }
 
     if (message.triggers != null) {
@@ -55,15 +57,17 @@ class MBMessageSavingUtility {
     String messageTypeString = jsonDictionary['type'];
     MBMessageType messageType = _messageTypeForString(messageTypeString);
 
+    int createdAtInt = jsonDictionary['createdAt'];
     int startDateInt = jsonDictionary['startDate'];
     int endDateInt = jsonDictionary['endDate'];
     bool automationIsOn = jsonDictionary['automationIsOn'];
 
     int sendAfterDays = jsonDictionary['sendAfterDays'];
+    int repeatTimes = jsonDictionary['repeatTimes'];
 
-    MBInAppMessage inAppMessage;
-    MBPushMessage pushMessage;
-    MBMessageTriggers triggers;
+    MBInAppMessage? inAppMessage;
+    MBPushMessage? pushMessage;
+    MBMessageTriggers? triggers;
 
     if (jsonDictionary['inAppMessage'] != null) {
       inAppMessage = MBInAppMessageSavingUtility.inAppMessageFromJsonDictionary(
@@ -83,12 +87,14 @@ class MBMessageSavingUtility {
       title: title,
       messageDescription: messageDescription,
       messageType: messageType,
+      createdAt: DateTime.fromMillisecondsSinceEpoch(createdAtInt * 1000),
       startDate: DateTime.fromMillisecondsSinceEpoch(startDateInt * 1000),
       endDate: DateTime.fromMillisecondsSinceEpoch(endDateInt * 1000),
       automationIsOn: automationIsOn,
       inAppMessage: inAppMessage,
       pushMessage: pushMessage,
       sendAfterDays: sendAfterDays,
+      repeatTimes: repeatTimes,
       triggers: triggers,
     );
     return message;

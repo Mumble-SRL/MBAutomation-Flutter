@@ -11,20 +11,20 @@ class MBEventTrigger extends MBTrigger {
   final int times;
 
   /// Metadata associated with the event.
-  final Map<String, dynamic> metadata;
+  final Map<String, dynamic>? metadata;
 
   /// If the trigger has been completed this var will have the date the event has been completed.
-  DateTime completionDate;
+  DateTime? completionDate;
 
   /// Counter to keeps track of how many times an event has happened.
-  int numberOfTimes;
+  int? numberOfTimes;
 
   /// Initializes an event trigger with the data provided.
   MBEventTrigger({
-    @required String id,
-    @required this.event,
-    @required this.times,
-    @required this.metadata,
+    required String id,
+    required this.event,
+    required this.times,
+    this.metadata,
   }) : super(
           id: id,
           triggerType: MBTriggerType.event,
@@ -36,7 +36,7 @@ class MBEventTrigger extends MBTrigger {
     String event = dictionary['event_name'] ?? '';
 
     int times = dictionary['times'] ?? 1;
-    Map<String, dynamic> metadata = dictionary['metadata'];
+    Map<String, dynamic>? metadata = dictionary['metadata'];
 
     return MBEventTrigger(
       id: id,
@@ -71,7 +71,7 @@ class MBEventTrigger extends MBTrigger {
       int currentNumberOfTimes = numberOfTimes ?? 0;
       currentNumberOfTimes += 1;
       numberOfTimes = currentNumberOfTimes;
-      if (numberOfTimes >= times) {
+      if (currentNumberOfTimes >= times) {
         completionDate = DateTime.now();
         return true;
       }
@@ -89,7 +89,7 @@ class MBEventTrigger extends MBTrigger {
     if (completionDate == null) {
       return false;
     }
-    return completionDate.isBefore(DateTime.now());
+    return completionDate!.isBefore(DateTime.now());
   }
 
 //region json
@@ -101,7 +101,7 @@ class MBEventTrigger extends MBTrigger {
     dictionary['metadata'] = metadata;
     if (completionDate != null) {
       dictionary['completionDate'] =
-          completionDate.millisecondsSinceEpoch ~/ 1000;
+          completionDate!.millisecondsSinceEpoch ~/ 1000;
     }
     if (numberOfTimes != null) {
       dictionary['numberOfTimes'] = numberOfTimes;
@@ -111,10 +111,15 @@ class MBEventTrigger extends MBTrigger {
 
   @override
   factory MBEventTrigger.fromJsonDictionary(Map<String, dynamic> dictionary) {
-    String id = dictionary['id'];
-    String event = dictionary['event'];
-    int times = dictionary['times'];
-    Map<String, dynamic> metadata = dictionary['metadata'];
+    String id = dictionary['id'] ?? '';
+    String event = dictionary['event'] ?? '';
+    int times = 0;
+    if (dictionary['times'] is String) {
+      times = int.tryParse(dictionary['times']) ?? 0;
+    } else if (dictionary['times'] is int) {
+      times = dictionary['times'];
+    }
+    Map<String, dynamic>? metadata = dictionary['metadata'];
 
     MBEventTrigger trigger = MBEventTrigger(
       id: id,
@@ -134,6 +139,7 @@ class MBEventTrigger extends MBTrigger {
 
     return trigger;
   }
+
 //endregion
 
 //region update trigger

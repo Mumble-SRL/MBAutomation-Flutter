@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mbmessages/push_notifications/mbpush.dart';
 import 'dart:convert';
@@ -21,17 +20,17 @@ class MBAutomationFlutterPlugin {
   /// @param media The path of a media that will be showed with the notification.
   /// @param mediaType The media type.
   static Future<bool> showLocalNotification({
-    @required String id,
-    @required DateTime date,
-    @required String title,
-    @required String body,
-    @required int badge,
-    @required String launchImage,
-    @required String sound,
-    @required String media,
-    @required String mediaType,
+    required String id,
+    required DateTime date,
+    required String title,
+    required String body,
+    required int? badge,
+    required String? launchImage,
+    required String? sound,
+    required String? media,
+    required String? mediaType,
   }) async {
-    MPAndroidNotificationsSettings androidNotificationsSettings =
+    MPAndroidNotificationsSettings? androidNotificationsSettings =
         MBPush.androidPushNotificationsSettings;
     if (Platform.isAndroid && androidNotificationsSettings == null) {
       return false;
@@ -51,14 +50,16 @@ class MBAutomationFlutterPlugin {
       'channelDescription': androidNotificationsSettings?.channelDescription,
       'icon': androidNotificationsSettings?.icon,
     };
-    arguments.addAll(androidNotificationsSettings.toMethodChannelArguments());
-    bool result = await _channel.invokeMethod('showNotification', arguments);
-    return result ?? false;
+    arguments.addAll(androidNotificationsSettings!.toMethodChannelArguments());
+    dynamic? result =
+        await _channel.invokeMethod('showNotification', arguments);
+    bool booleanResult = result is bool ? result : false;
+    return booleanResult;
   }
 
   /// Cancels the local notification with the specified id.
   /// @param id The id of the notification that will be cancelled
-  static Future<void> cancelLocalNotification({@required String id}) async {
+  static Future<void> cancelLocalNotification({required String id}) async {
     await _channel.invokeMethod('cancelNotification', {'id': id.hashCode});
   }
 
@@ -78,32 +79,60 @@ class MBAutomationFlutterPlugin {
   static Future<dynamic> _mbAutomationHandler(MethodCall methodCall) async {
     switch (methodCall.method) {
       case 'pushArrived':
-        Function(Map<String, dynamic>) onNotificationArrival =
+        Function(Map<String, dynamic>)? onNotificationArrival =
             MBPush.onNotificationArrival;
         if (onNotificationArrival != null) {
-          if (methodCall.arguments is Map<String, dynamic>) {
-            onNotificationArrival(methodCall.arguments);
-          } else if (methodCall.arguments is String) {
-            Map<String, dynamic> map = json.decode(methodCall.arguments);
-            onNotificationArrival(map);
-          }
+          _callOnNotificationArrival(
+            methodCall.arguments,
+            onNotificationArrival,
+          );
         }
         break;
       case 'pushTapped':
-        Function(Map<String, dynamic>) onNotificationTap =
+        Function(Map<String, dynamic>)? onNotificationTap =
             MBPush.onNotificationTap;
         if (onNotificationTap != null) {
-          if (methodCall.arguments is Map<String, dynamic>) {
-            onNotificationTap(methodCall.arguments);
-          } else if (methodCall.arguments is String) {
-            Map<String, dynamic> map = json.decode(methodCall.arguments);
-            onNotificationTap(map);
-          }
+          _callOnNotificationTap(
+            methodCall.arguments,
+            onNotificationTap,
+          );
         }
         break;
       default:
         print('${methodCall.method} not implemented');
         return;
+    }
+  }
+
+  /// Parses the `arguments` and calls the `onNotificationArrival` callback.
+  static void _callOnNotificationArrival(
+    dynamic arguments,
+    Function(Map<String, dynamic>) onNotificationArrival,
+  ) {
+    if (arguments is Map<String, dynamic>) {
+      onNotificationArrival(arguments);
+    } else if (arguments is Map) {
+      Map<String, dynamic> map = Map<String, dynamic>.from(arguments);
+      onNotificationArrival(map);
+    } else if (arguments is String) {
+      Map<String, dynamic> map = json.decode(arguments);
+      onNotificationArrival(map);
+    }
+  }
+
+  /// Parses the `arguments` and calls the `onNotificationTap` callback.
+  static void _callOnNotificationTap(
+    dynamic arguments,
+    Function(Map<String, dynamic>) onNotificationTap,
+  ) {
+    if (arguments is Map<String, dynamic>) {
+      onNotificationTap(arguments);
+    } else if (arguments is Map) {
+      Map<String, dynamic> map = Map<String, dynamic>.from(arguments);
+      onNotificationTap(map);
+    } else if (arguments is String) {
+      Map<String, dynamic> map = json.decode(arguments);
+      onNotificationTap(map);
     }
   }
 }

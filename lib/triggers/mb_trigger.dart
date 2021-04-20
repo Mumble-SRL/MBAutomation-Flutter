@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 /// The type of trigger.
 enum MBTriggerType {
   /// A location trigger.
@@ -36,8 +34,8 @@ class MBTrigger {
   /// @param id The id of the trigger.
   /// @param triggerType The type of trigger.
   MBTrigger({
-    @required this.id,
-    @required this.triggerType,
+    required this.id,
+    required this.triggerType,
   });
 
   /// Initializes a trigger with the data of the dictionary returned by the APIs.
@@ -79,6 +77,7 @@ class MBTrigger {
       triggerType: triggerType,
     );
   }
+
 //endregion
 
 //region trigger type conversions
@@ -89,27 +88,19 @@ class MBTrigger {
     switch (triggerType) {
       case MBTriggerType.location:
         return 'location';
-        break;
       case MBTriggerType.appOpening:
         return 'app_opening';
-        break;
       case MBTriggerType.view:
         return 'view';
-        break;
       case MBTriggerType.inactiveUser:
         return 'inactive_user';
-        break;
       case MBTriggerType.event:
         return 'event';
-        break;
       case MBTriggerType.tagChange:
         return 'tag_change';
-        break;
       case MBTriggerType.unknown:
         return 'unknown';
-        break;
     }
-    return 'unknown';
   }
 
   /// Converts a string to a `MBTriggerType`.
@@ -119,28 +110,22 @@ class MBTrigger {
     switch (triggerTypeString) {
       case 'location':
         return MBTriggerType.location;
-        break;
       case 'app_opening':
         return MBTriggerType.appOpening;
-        break;
       case 'view':
         return MBTriggerType.view;
-        break;
       case 'inactive_user':
         return MBTriggerType.inactiveUser;
-        break;
       case 'event':
         return MBTriggerType.event;
-        break;
       case 'tag_change':
         return MBTriggerType.tagChange;
-        break;
       case 'unknown':
         return MBTriggerType.unknown;
-        break;
     }
     return MBTriggerType.unknown;
   }
+
 //endregion
 
 //region update trigger

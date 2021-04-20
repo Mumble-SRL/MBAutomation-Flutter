@@ -60,7 +60,7 @@ class MBAutomationDatabase {
 
   /// Fetches the views saved in the DB.
   /// @returns A Future that completes whit the views retrieved from the DB.
-  static Future<List<MBAutomationView>> views() async {
+  static Future<List<MBAutomationView>?> views() async {
     Database db = await _database();
     final res = await db.query(
       'view',
@@ -96,7 +96,7 @@ class MBAutomationDatabase {
 
   /// Fetches the events saved in the DB.
   /// @returns A Future that completes whit the events retrieved from the DB.
-  static Future<List<MBAutomationEvent>> events() async {
+  static Future<List<MBAutomationEvent>?> events() async {
     Database db = await _database();
     final res = await db.query(
       'event',

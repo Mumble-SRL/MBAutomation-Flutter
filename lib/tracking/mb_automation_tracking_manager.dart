@@ -25,7 +25,7 @@ class MBAutomationTrackingManager {
   set timerTime(int timerTime) {
     _timerTime = timerTime;
     if (_checkQueueTimer != null) {
-      _checkQueueTimer.cancel();
+      _checkQueueTimer?.cancel();
       startTimer();
     }
   }
@@ -34,7 +34,7 @@ class MBAutomationTrackingManager {
   int get timerTimer => _timerTime;
 
   /// The timer used to check the DB and send events/view to MBurger.
-  Timer _checkQueueTimer;
+  Timer? _checkQueueTimer;
 
   /// If it's sending data to MBurger.
   bool _sendingData = false;
@@ -54,7 +54,7 @@ class MBAutomationTrackingManager {
   /// Starts a periodic timer with a duration of `_timerTime` seconds.
   void startTimer() {
     if (_checkQueueTimer != null) {
-      _checkQueueTimer.cancel();
+      _checkQueueTimer!.cancel();
     }
     _checkQueueTimer = Timer.periodic(
       Duration(seconds: _timerTime),
@@ -65,7 +65,7 @@ class MBAutomationTrackingManager {
   /// Stops the timer.
   void stopTimer() {
     if (_checkQueueTimer != null) {
-      _checkQueueTimer.cancel();
+      _checkQueueTimer!.cancel();
       _checkQueueTimer = null;
     }
   }
@@ -88,7 +88,7 @@ class MBAutomationTrackingManager {
 
   /// If tracking is enabled or not, it will return the value of the `trackingEnabled` flag of the `MBAutomation` plugin.
   bool _trackingEnabled() {
-    MBAutomation plugin = MBManager.shared.pluginOf<MBAutomation>();
+    MBAutomation? plugin = MBManager.shared.pluginOf<MBAutomation>();
     return plugin?.trackingEnabled ?? false;
   }
 
@@ -107,7 +107,7 @@ class MBAutomationTrackingManager {
   /// Fetches views from the DB and sends them to MBurger.
   /// If the API call is successful views are removed from the DB.
   Future<void> _checkViewsQueue() async {
-    List<MBAutomationView> views = await MBAutomationDatabase.views();
+    List<MBAutomationView>? views = await MBAutomationDatabase.views();
     if (views == null) {
       return;
     }
@@ -147,7 +147,7 @@ class MBAutomationTrackingManager {
   /// Fetches events from the DB and sends them to MBurger.
   /// If the API call is successful events are removed from the DB.
   Future<void> _checkEventsQueue() async {
-    List<MBAutomationEvent> events = await MBAutomationDatabase.events();
+    List<MBAutomationEvent>? events = await MBAutomationDatabase.events();
     if (events == null) {
       return;
     }

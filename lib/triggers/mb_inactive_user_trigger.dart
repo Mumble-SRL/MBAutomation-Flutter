@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:mbaudience/mbaudience.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
@@ -9,8 +8,8 @@ class MBInactiveUserTrigger extends MBTrigger {
 
   /// Initializes an inactive user trigger with the data provided.
   MBInactiveUserTrigger({
-    @required String id,
-    @required this.days,
+    required String id,
+    required this.days,
   }) : super(
           id: id,
           triggerType: MBTriggerType.inactiveUser,
@@ -20,7 +19,12 @@ class MBInactiveUserTrigger extends MBTrigger {
   factory MBInactiveUserTrigger.fromDictionary(
       Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
-    int days = dictionary['days'];
+    int days = 0;
+    if (dictionary['days'] is int) {
+      days = dictionary['days'];
+    } else if (dictionary['days'] is String) {
+      days = int.tryParse(dictionary['days'] as String) ?? 0;
+    }
 
     return MBInactiveUserTrigger(
       id: id,
@@ -37,12 +41,12 @@ class MBInactiveUserTrigger extends MBTrigger {
       return false;
     }
     int currentSession = await MBAudience.currentSession;
-    DateTime currentDate =
+    DateTime? currentDate =
         await MBAudience.startSessionDateForSession(currentSession);
     if (currentDate == null) {
       return false;
     }
-    DateTime lastSessionDate =
+    DateTime? lastSessionDate =
         await MBAudience.startSessionDateForSession(currentSession - 1);
     if (lastSessionDate == null) {
       return false;

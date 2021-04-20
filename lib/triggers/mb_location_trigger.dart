@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:mbautomation/triggers/mb_trigger.dart';
 
 /// A location trigger that becomes true when the user visits a location, specified by lat, lng and radius.
@@ -21,16 +20,16 @@ class MBLocationTrigger extends MBTrigger {
   final int afterDays;
 
   /// The date of completion of this trigger.
-  DateTime completionDate;
+  DateTime? completionDate;
 
   /// Initializes a location trigger with the data provided.
   MBLocationTrigger({
-    @required String id,
-    @required this.address,
-    @required this.latitude,
-    @required this.longitude,
-    @required this.radius,
-    @required this.afterDays,
+    required String id,
+    required this.address,
+    required this.latitude,
+    required this.longitude,
+    required this.radius,
+    required this.afterDays,
   }) : super(
           id: id,
           triggerType: MBTriggerType.location,
@@ -40,8 +39,8 @@ class MBLocationTrigger extends MBTrigger {
   factory MBLocationTrigger.fromDictionary(Map<String, dynamic> dictionary) {
     String id = dictionary['id'] ?? '';
     String address = dictionary['address'] ?? '';
-    double latitude = dictionary['latitude'];
-    double longitude = dictionary['longitude'];
+    double latitude = dictionary['latitude'] ?? 0;
+    double longitude = dictionary['longitude'] ?? 0;
     double radius = 0;
     if (dictionary['radius'] is double) {
       radius = dictionary['radius'];
@@ -68,10 +67,10 @@ class MBLocationTrigger extends MBTrigger {
   /// @param lastLongitude The last longitude seen by `MBAutomation`.
   /// @returns If this trigger has changed.
   bool locationDataUpdated({
-    @required latitude,
-    @required longitude,
-    @required lastLatitude,
-    @required lastLongitude,
+    required double latitude,
+    required double longitude,
+    double? lastLatitude,
+    double? lastLongitude,
   }) {
     if (completionDate != null) {
       return false;
@@ -102,7 +101,7 @@ class MBLocationTrigger extends MBTrigger {
     }
 
     if (locationTriggerSatisfied) {
-      if (afterDays == 0 || afterDays == null) {
+      if (afterDays == 0) {
         completionDate = DateTime.now();
         return true;
       } else {
@@ -136,7 +135,7 @@ class MBLocationTrigger extends MBTrigger {
     if (completionDate == null) {
       return false;
     }
-    return completionDate.isBefore(DateTime.now());
+    return completionDate!.isBefore(DateTime.now());
   }
 
 //region json
@@ -151,7 +150,7 @@ class MBLocationTrigger extends MBTrigger {
 
     if (completionDate != null) {
       dictionary['completionDate'] =
-          completionDate.millisecondsSinceEpoch ~/ 1000;
+          completionDate!.millisecondsSinceEpoch ~/ 1000;
     }
 
     return dictionary;
@@ -183,6 +182,7 @@ class MBLocationTrigger extends MBTrigger {
 
     return trigger;
   }
+
 //endregion
 
 //region update trigger
