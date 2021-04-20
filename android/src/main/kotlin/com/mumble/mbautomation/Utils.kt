@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -18,7 +17,7 @@ import kotlin.random.Random
 
 class Utils {
     companion object {
-        
+
         fun getLauncherActivity(context: Context): Intent? {
             val packageManager = context.packageManager
             return packageManager.getLaunchIntentForPackage(context.packageName)
@@ -45,7 +44,13 @@ class Utils {
 
         fun scheduleNotification(applicationContext: Context, map: Map<String, Any>) {
             val id = map["id"] as Int
-            val date = map["date"] as Long
+
+            val date: Long = if (map["date"] is Long) {
+                map["date"] as Long
+            } else {
+                (map["date"] as Int).toLong()
+            }
+
             val new_millis = TimeUnit.SECONDS.toMillis(date)
             val gson = Gson()
 
@@ -62,7 +67,7 @@ class Utils {
             }
         }
 
-        fun showNotification(applicationContext: Context, map: Map<String, Any>){
+        fun showNotification(applicationContext: Context, map: Map<String, Any>) {
             val gson = Gson()
             val title = map["title"] as String?
             val body = map["body"] as String?
