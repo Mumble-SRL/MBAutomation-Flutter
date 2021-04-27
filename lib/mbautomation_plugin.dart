@@ -50,7 +50,9 @@ class MBAutomationFlutterPlugin {
       'channelDescription': androidNotificationsSettings?.channelDescription,
       'icon': androidNotificationsSettings?.icon,
     };
-    arguments.addAll(androidNotificationsSettings!.toMethodChannelArguments());
+    if (androidNotificationsSettings != null) {
+      arguments.addAll(androidNotificationsSettings.toMethodChannelArguments());
+    }
     dynamic? result =
         await _channel.invokeMethod('showNotification', arguments);
     bool booleanResult = result is bool ? result : false;
