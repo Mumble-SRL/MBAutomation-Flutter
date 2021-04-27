@@ -1,6 +1,6 @@
 name: mbautomation
 description: MBAutomation plugin for MBurger that lets you present push and in app messages based on the behavior of the user.
-version: 2.0.0-beta.3
+version: 2.0.0-beta.4
 authors:
   - Lorenzo Oliveto <lorenzo.oliveto@mumbleideas.it>
   - Enrico Ori <enrico.ori@mumbleideas.it>
