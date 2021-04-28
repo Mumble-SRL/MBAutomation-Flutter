@@ -429,6 +429,9 @@ class MBAutomationMessagesManager {
       return [];
     }
     String contents = await f.readAsString();
+    if (contents.isEmpty) {
+      return [];
+    }
     List<dynamic> list = json.decode(contents);
     List<MBMessage> messages = [];
     for (dynamic messageDict in list) {
