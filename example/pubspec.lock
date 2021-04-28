@@ -155,14 +155,14 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "2.0.0-beta"
+    version: "2.0.0-beta.4"
   mbmessages:
     dependency: transitive
     description:
       name: mbmessages
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta"
+    version: "2.0.0-beta.1"
   mburger:
     dependency: transitive
     description:

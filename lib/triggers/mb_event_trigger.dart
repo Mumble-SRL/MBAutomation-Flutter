@@ -35,8 +35,17 @@ class MBEventTrigger extends MBTrigger {
     String id = dictionary['id'] ?? '';
     String event = dictionary['event_name'] ?? '';
 
-    int times = dictionary['times'] ?? 1;
-    Map<String, dynamic>? metadata = dictionary['metadata'];
+    int times = 1;
+    if (dictionary['times'] is int) {
+      times = dictionary['times'];
+    } else if (dictionary['times'] is String) {
+      times = int.tryParse(dictionary['times']) ?? 1;
+    }
+
+    Map<String, dynamic>? metadata;
+    if (dictionary['metadata'] is Map) {
+      metadata = dictionary['metadata'];
+    }
 
     return MBEventTrigger(
       id: id,
