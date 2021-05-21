@@ -7,7 +7,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -56,7 +56,7 @@ packages:
       name: device_info
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   device_info_platform_interface:
     dependency: transitive
     description:
@@ -96,7 +96,7 @@ packages:
       name: flutter_secure_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.0"
+    version: "4.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -113,7 +113,7 @@ packages:
       name: http
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.0"
+    version: "0.13.3"
   http_parser:
     dependency: transitive
     description:
@@ -148,28 +148,28 @@ packages:
       name: mbaudience
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta"
+    version: "2.0.0"
   mbautomation:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "2.0.0-beta.4"
+    version: "2.0.0"
   mbmessages:
     dependency: transitive
     description:
       name: mbmessages
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta.1"
+    version: "2.0.0"
   mburger:
     dependency: transitive
     description:
       name: mburger
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-beta.1"
+    version: "2.0.0"
   meta:
     dependency: transitive
     description:
@@ -190,7 +190,7 @@ packages:
       name: mpush
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-beta"
+    version: "1.0.0"
   package_info:
     dependency: transitive
     description:
@@ -253,14 +253,14 @@ packages:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.0"
+    version: "8.0.0+1"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.1.1"
+    version: "3.5.0"
   platform:
     dependency: transitive
     description:
@@ -335,7 +335,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   sqflite:
     dependency: transitive
     description:
@@ -391,7 +391,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   typed_data:
     dependency: transitive
     description:

@@ -34,13 +34,13 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configurePushNotifications() async {
-    MBPush.pushToken = 'YOUR_PUSH_API_KEY';
-    MBPush.onToken = (token) async {
+    MBMessages.pushToken = 'YOUR_PUSH_API_KEY';
+    MBMessages.onToken = (token) async {
       print("Token received $token");
-      await MBPush.registerDevice(token).catchError(
+      await MBMessages.registerDevice(token).catchError(
         (error) => print(error),
       );
-      await MBPush.registerToTopics(
+      await MBMessages.registerToTopics(
         [
           await MBMessages.projectPushTopic(),
           await MBMessages.devicePushTopic(),
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> {
       print('Registered');
     };
 
-    MBPush.configure(
+    MBMessages.configurePush(
       onNotificationArrival: (notification) {
         print("Notification arrived: $notification");
       },
@@ -67,9 +67,10 @@ class _MyAppState extends State<MyApp> {
       ),
     );
 
-    MBPush.requestToken();
+    MBMessages.requestToken();
 
-    Map<String, dynamic>? launchNotification = await MBPush.launchNotification();
+    Map<String, dynamic>? launchNotification =
+        await MBMessages.launchNotification();
     print(launchNotification);
   }
 
