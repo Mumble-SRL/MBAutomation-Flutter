@@ -83,10 +83,10 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// This function parse the triggers array, creates triggers objects and updates the saved messages where automation is enabled.
   /// @param messages The messages received, the triggers property will be populated with a `MBTrigger` object.
   /// @param fromStartup If messages has been retrieved at app startup
-  void messagesReceived(
+  Future<void> messagesReceived(
     List<dynamic> messages,
     bool fromStartup,
-  ) {
+  ) async {
     List<MBMessage> automationMessages = [];
     for (dynamic message in messages) {
       if (message is MBMessage) {
@@ -96,11 +96,11 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
       }
     }
     MBAutomationMessagesManager.setTriggersToMessages(automationMessages);
-    MBAutomationMessagesManager.saveMessages(
+    await MBAutomationMessagesManager.saveMessages(
       automationMessages,
       fromFetch: true,
     );
-    MBAutomationMessagesManager.checkMessages(fromStartup: fromStartup);
+    await MBAutomationMessagesManager.checkMessages(fromStartup: fromStartup);
   }
 
 //endregion
