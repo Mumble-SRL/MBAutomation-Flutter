@@ -113,12 +113,14 @@ class MBAutomationPushNotificationsManager {
   /// If a message has already been shoewd or not.
   /// @param The message to check.
   static Future<bool> _needsToShowMessage(MBMessage message) async {
-    if (message.automationIsOn) {
-      if (message.endDate.millisecondsSinceEpoch <
+    if (message.endDate != null) {
+      DateTime endDate = message.endDate!;
+      if (endDate.millisecondsSinceEpoch <
           DateTime.now().millisecondsSinceEpoch) {
         return false;
       }
     }
+
     Map<String, dynamic> showedMessagesCount = {};
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? showedMessagesString = prefs.getString(_showedMessagesKey);

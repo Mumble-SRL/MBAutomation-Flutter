@@ -17,8 +17,12 @@ class MBMessageSavingUtility {
       'messageDescription': message.messageDescription,
       'type': _stringForMessageType(message.messageType),
       'createdAt': message.createdAt.millisecondsSinceEpoch ~/ 1000,
-      'startDate': message.startDate.millisecondsSinceEpoch ~/ 1000,
-      'endDate': message.endDate.millisecondsSinceEpoch ~/ 1000,
+      'startDate': message.startDate != null
+          ? message.startDate!.millisecondsSinceEpoch ~/ 1000
+          : null,
+      'endDate': message.endDate != null
+          ? message.endDate!.millisecondsSinceEpoch ~/ 1000
+          : null,
       'automationIsOn': message.automationIsOn,
       'sendAfterDays': message.sendAfterDays,
       'repeatTimes': message.repeatTimes,
@@ -58,8 +62,8 @@ class MBMessageSavingUtility {
     MBMessageType messageType = _messageTypeForString(messageTypeString);
 
     int createdAtInt = jsonDictionary['createdAt'];
-    int startDateInt = jsonDictionary['startDate'];
-    int endDateInt = jsonDictionary['endDate'];
+    int? startDateInt = jsonDictionary['startDate'];
+    int? endDateInt = jsonDictionary['endDate'];
     bool automationIsOn = jsonDictionary['automationIsOn'];
 
     int sendAfterDays = jsonDictionary['sendAfterDays'];
@@ -88,8 +92,12 @@ class MBMessageSavingUtility {
       messageDescription: messageDescription,
       messageType: messageType,
       createdAt: DateTime.fromMillisecondsSinceEpoch(createdAtInt * 1000),
-      startDate: DateTime.fromMillisecondsSinceEpoch(startDateInt * 1000),
-      endDate: DateTime.fromMillisecondsSinceEpoch(endDateInt * 1000),
+      startDate: startDateInt != null
+          ? DateTime.fromMillisecondsSinceEpoch(startDateInt * 1000)
+          : null,
+      endDate: endDateInt != null
+          ? DateTime.fromMillisecondsSinceEpoch(endDateInt * 1000)
+          : null,
       automationIsOn: automationIsOn,
       inAppMessage: inAppMessage,
       pushMessage: pushMessage,
