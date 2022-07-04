@@ -1,4 +1,4 @@
-## 2.0.0+2
+## 2.0.0+3
 
 * Bugfixes.
-* Updates for mbmessages 2.0.2+4.
+* Migration to Flutter 3
