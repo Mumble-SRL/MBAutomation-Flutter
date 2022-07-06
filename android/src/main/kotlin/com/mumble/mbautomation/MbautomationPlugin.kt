@@ -62,7 +62,7 @@ class MbautomationPlugin : ActivityAware, FlutterPlugin, PluginRegistry.NewInten
         this.applicationContext = null
     }
 
-    override fun onNewIntent(intent: Intent?): Boolean {
+    override fun onNewIntent(intent: Intent): Boolean {
         val res: Boolean = Utils.sendNotificationPayloadMessage(channel, intent)
         if (res && mainActivity != null) {
             mainActivity!!.intent = intent
