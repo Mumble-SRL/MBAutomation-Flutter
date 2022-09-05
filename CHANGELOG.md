@@ -1,4 +1,3 @@
-## 2.0.0+4
+## 2.0.1
 
-* Bugfixes.
-* Migration to Flutter 3
+* Updated Flutter version to 3.3.0

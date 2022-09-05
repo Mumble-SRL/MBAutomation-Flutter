@@ -25,7 +25,7 @@ class MBAutomationPushNotificationsManager {
         }
       }
     }
-    if (messagesToShow.length != 0) {
+    if (messagesToShow.isNotEmpty) {
       for (MBMessage message in messagesToShow) {
         await _showPushNotificationForMessage(message);
       }
@@ -107,7 +107,7 @@ class MBAutomationPushNotificationsManager {
   /// The notification identifier string for the message passed.
   /// @param message The message for which the identifier will be created.
   static String _notificationIdentifierForMessage(MBMessage message) {
-    return 'mburger.automation.push.' + (message.id.toString());
+    return 'mburger.automation.push.${message.id}';
   }
 
   /// If a message has already been shoewd or not.
