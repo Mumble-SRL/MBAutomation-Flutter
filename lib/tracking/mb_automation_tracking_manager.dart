@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:mbautomation/mbautomation.dart';
 import 'package:mbautomation/tracking/db/mb_automation_database.dart';
 import 'package:mbautomation/tracking/model/mb_automation_event.dart';
@@ -111,7 +112,7 @@ class MBAutomationTrackingManager {
     if (views == null) {
       return;
     }
-    if (views.length == 0) {
+    if (views.isEmpty) {
       return;
     }
 
@@ -121,7 +122,7 @@ class MBAutomationTrackingManager {
     var defaultParameters = await MBManager.shared.defaultParameters();
     var headers = await MBManager.shared.headers(contentTypeJson: true);
 
-    Map<String, dynamic> parameters = Map<String, dynamic>();
+    Map<String, dynamic> parameters = <String, dynamic>{};
     parameters.addAll(defaultParameters);
     parameters['views'] = viewsDictionaries;
 
@@ -140,7 +141,7 @@ class MBAutomationTrackingManager {
       MBManager.checkResponse(response.body, checkBody: false);
       await MBAutomationDatabase.deleteViews(views);
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 
@@ -151,7 +152,7 @@ class MBAutomationTrackingManager {
     if (events == null) {
       return;
     }
-    if (events.length == 0) {
+    if (events.isEmpty) {
       return;
     }
 
@@ -161,7 +162,7 @@ class MBAutomationTrackingManager {
     var defaultParameters = await MBManager.shared.defaultParameters();
     var headers = await MBManager.shared.headers(contentTypeJson: true);
 
-    Map<String, dynamic> parameters = Map<String, dynamic>();
+    Map<String, dynamic> parameters = <String, dynamic>{};
     parameters.addAll(defaultParameters);
     parameters['events'] = eventsDictionaries;
 
@@ -180,7 +181,7 @@ class MBAutomationTrackingManager {
       MBManager.checkResponse(response.body, checkBody: false);
       await MBAutomationDatabase.deleteEvents(events);
     } catch (e) {
-      print(e);
+      debugPrint(e.toString());
     }
   }
 }

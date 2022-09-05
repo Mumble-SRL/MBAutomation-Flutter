@@ -64,15 +64,15 @@ class MBEventTrigger extends MBTrigger {
     }
     bool isTriggerEvent = true;
     if (event.metadata != null) {
-      if (this.metadata != null) {
+      if (metadata != null) {
         isTriggerEvent = mapEquals(
           event.metadata,
-          this.metadata,
+          metadata,
         );
       } else {
         isTriggerEvent = false;
       }
-    } else if (this.metadata != null) {
+    } else if (metadata != null) {
       isTriggerEvent = false;
     }
 

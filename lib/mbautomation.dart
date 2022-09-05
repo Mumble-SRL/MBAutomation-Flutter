@@ -32,8 +32,8 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// @param trackingEnabled If the tracking is enabled, default to `true`.
   /// @param eventsTimerTime The frequency used to send events and view to MBurger (in seconds), default 10.
   MBAutomation({
-    this.trackingEnabled: true,
-    int eventsTimerTime: 10,
+    this.trackingEnabled = true,
+    int eventsTimerTime = 10,
   }) : _eventsTimerTime = eventsTimerTime {
     MBAutomationDatabase.initDb();
     MBAutomationMessagesManager.startMessageTimer(time: 30);
@@ -44,6 +44,8 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
 
 //region plugin
   /// The order of startup for this plugin, in MBurger
+  @override
+  // ignore: overridden_fields
   int startupOrder = 3;
 
   /// The function run at startup by MBurger, initializes the plugin and do the startup work.
@@ -56,6 +58,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// Invoked by the MBurger plugins manager when a tag changes in the `MBAudience` plugin.
   /// @param tag The tag.
   /// @param value: The value of the tag, `null` if the tag has been deleted.
+  @override
   void tagChanged(
     String tag, {
     String? value,
@@ -69,6 +72,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// Invoked by the MBurger plugins manager when new location data is available in the `MBAudience` plugin.
   /// @param latitude The new latitude.
   /// @param longitude: The new longitude.
+  @override
   void locationDataUpdated(
     double latitude,
     double longitude,
@@ -83,6 +87,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   /// This function parse the triggers array, creates triggers objects and updates the saved messages where automation is enabled.
   /// @param messages The messages received, the triggers property will be populated with a `MBTrigger` object.
   /// @param fromStartup If messages has been retrieved at app startup
+  @override
   Future<void> messagesReceived(
     List<dynamic> messages,
     bool fromStartup,
@@ -137,6 +142,7 @@ class MBAutomation extends MBPlugin with WidgetsBindingObserver {
   }
 
   /// WidgetBindingsObserver function, when the app is resumed automation checks the triggers in case something has changed.
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       MBAutomationMessagesManager.checkMessages(fromStartup: false);

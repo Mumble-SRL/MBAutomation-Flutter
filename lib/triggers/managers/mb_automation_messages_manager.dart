@@ -128,7 +128,7 @@ class MBAutomationMessagesManager {
     if (messagesSaved == null) {
       return;
     }
-    if (messagesSaved.length == 0) {
+    if (messagesSaved.isEmpty) {
       return;
     }
 
@@ -137,9 +137,9 @@ class MBAutomationMessagesManager {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
         List<MBEventTrigger> eventsTriggers =
-            List.castFrom<MBTrigger, MBEventTrigger>(messageTriggers.triggers
-                .where((t) => t is MBEventTrigger)
-                .toList());
+            List.castFrom<MBTrigger, MBEventTrigger>(
+          messageTriggers.triggers.whereType<MBEventTrigger>().toList(),
+        );
         for (MBEventTrigger eventTrigger in eventsTriggers) {
           bool triggerChanged = await eventTrigger.eventHappened(event);
           if (triggerChanged) {
@@ -174,7 +174,7 @@ class MBAutomationMessagesManager {
     if (messagesSaved == null) {
       return;
     }
-    if (messagesSaved.length == 0) {
+    if (messagesSaved.isEmpty) {
       return;
     }
 
@@ -183,10 +183,9 @@ class MBAutomationMessagesManager {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
         List<MBTagChangeTrigger> tagTriggers =
-            List.castFrom<MBTrigger, MBTagChangeTrigger>(messageTriggers
-                .triggers
-                .where((t) => t is MBTagChangeTrigger)
-                .toList());
+            List.castFrom<MBTrigger, MBTagChangeTrigger>(
+          messageTriggers.triggers.whereType<MBTagChangeTrigger>().toList(),
+        );
         for (MBTagChangeTrigger tagTrigger in tagTriggers) {
           MBTriggerChangedStatus result = tagTrigger.tagChanged(tag, value);
           if (result != MBTriggerChangedStatus.unchanged) {
@@ -225,7 +224,7 @@ class MBAutomationMessagesManager {
     if (messagesSaved == null) {
       return;
     }
-    if (messagesSaved.length == 0) {
+    if (messagesSaved.isEmpty) {
       return;
     }
 
@@ -236,9 +235,9 @@ class MBAutomationMessagesManager {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
         List<MBLocationTrigger> locationTriggers =
-            List.castFrom<MBTrigger, MBLocationTrigger>(messageTriggers.triggers
-                .where((t) => t is MBLocationTrigger)
-                .toList());
+            List.castFrom<MBTrigger, MBLocationTrigger>(
+          messageTriggers.triggers.whereType<MBLocationTrigger>().toList(),
+        );
         for (MBLocationTrigger locationTrigger in locationTriggers) {
           bool triggerChanged = locationTrigger.locationDataUpdated(
             latitude: latitude,
@@ -303,12 +302,12 @@ class MBAutomationMessagesManager {
 
   /// Checks the saved messages and show them if they need to be showed.
   /// @param fromStartup If the check has been triggered at app startup.
-  static Future<void> checkMessages({bool fromStartup: false}) async {
+  static Future<void> checkMessages({bool fromStartup = false}) async {
     List<MBMessage>? messagesSaved = await savedMessages();
     if (messagesSaved == null) {
       return;
     }
-    if (messagesSaved.length == 0) {
+    if (messagesSaved.isEmpty) {
       return;
     }
     List<MBMessage> messagesToShow = [];
@@ -341,7 +340,7 @@ class MBAutomationMessagesManager {
       }
     }
 
-    if (messagesToShow.length != 0) {
+    if (messagesToShow.isNotEmpty) {
       List<MBMessage> inAppMessages = messagesToShow
           .where((m) =>
               m.messageType == MBMessageType.inAppMessage &&
@@ -351,7 +350,7 @@ class MBAutomationMessagesManager {
           .where((m) =>
               m.messageType == MBMessageType.push && m.pushMessage != null)
           .toList();
-      if (inAppMessages.length != 0) {
+      if (inAppMessages.isNotEmpty) {
         MBMessages? plugin = MBManager.shared.pluginOf<MBMessages>();
         if (plugin != null) {
           MBInAppMessageManager.presentMessages(
@@ -362,7 +361,7 @@ class MBAutomationMessagesManager {
           );
         }
       }
-      if (pushMessages.length != 0) {
+      if (pushMessages.isNotEmpty) {
         MBAutomationPushNotificationsManager.showPushNotifications(
             pushMessages);
       }
@@ -377,7 +376,7 @@ class MBAutomationMessagesManager {
   /// @param fromFetch If the save has been triggered after an API call.
   static Future<void> saveMessages(
     List<MBMessage> messages, {
-    bool fromFetch: false,
+    bool fromFetch = false,
   }) async {
     String path = await _messagesPath();
     File f = File(path);
@@ -486,8 +485,7 @@ class MBAutomationMessagesManager {
 
   static Future<String> _triggersPath(MBMessage message) async {
     final directory = await getApplicationDocumentsDirectory();
-    String file =
-        'mb_automation_messages_' + message.id.toString() + '_triggers.json';
+    String file = 'mb_automation_messages_${message.id}_triggers.json';
     return '${directory.path}/$file';
   }
 

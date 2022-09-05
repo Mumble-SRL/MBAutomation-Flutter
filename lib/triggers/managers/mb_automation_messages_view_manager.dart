@@ -24,7 +24,7 @@ class MBAutomationMessagesViewManager {
     if (messagesSaved == null) {
       return;
     }
-    if (messagesSaved.length == 0) {
+    if (messagesSaved.isEmpty) {
       return;
     }
 
@@ -33,9 +33,9 @@ class MBAutomationMessagesViewManager {
       if (message.triggers is MBMessageTriggers) {
         MBMessageTriggers messageTriggers = message.triggers;
         List<MBViewTrigger> viewTriggers =
-            List.castFrom<MBTrigger, MBViewTrigger>(messageTriggers.triggers
-                .where((t) => t is MBViewTrigger)
-                .toList());
+            List.castFrom<MBTrigger, MBViewTrigger>(
+          messageTriggers.triggers.whereType<MBViewTrigger>().toList(),
+        );
         for (MBViewTrigger viewTrigger in viewTriggers) {
           bool result = viewTrigger.screenViewed(view);
           if (result) {
@@ -75,7 +75,7 @@ class MBAutomationMessagesViewManager {
     if (messagesSaved == null) {
       return;
     }
-    if (messagesSaved.length == 0) {
+    if (messagesSaved.isEmpty) {
       return;
     }
 

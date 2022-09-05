@@ -122,7 +122,7 @@ class MBMessageTriggers {
         updatedTriggers.add(newTrigger);
       }
     }
-    this.triggers = updatedTriggers;
+    triggers = updatedTriggers;
   }
 
 //region triggers method conversions

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mbmessages/push_notifications/mbpush.dart';
 import 'dart:convert';
@@ -7,7 +8,7 @@ import 'dart:convert';
 /// Interface to native code, used to present and schedule local notifications.
 class MBAutomationFlutterPlugin {
   /// Native method channel, used to interact with the native part.
-  static const MethodChannel _channel = const MethodChannel('mbautomation');
+  static const MethodChannel _channel = MethodChannel('mbautomation');
 
   /// Presents a local notification.
   /// @param id The id of the notification.
@@ -53,8 +54,7 @@ class MBAutomationFlutterPlugin {
     if (androidNotificationsSettings != null) {
       arguments.addAll(androidNotificationsSettings.toMethodChannelArguments());
     }
-    dynamic result =
-        await _channel.invokeMethod('showNotification', arguments);
+    dynamic result = await _channel.invokeMethod('showNotification', arguments);
     bool booleanResult = result is bool ? result : false;
     return booleanResult;
   }
@@ -101,7 +101,7 @@ class MBAutomationFlutterPlugin {
         }
         break;
       default:
-        print('${methodCall.method} not implemented');
+        debugPrint('${methodCall.method} not implemented');
         return;
     }
   }

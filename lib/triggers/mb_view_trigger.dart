@@ -60,7 +60,7 @@ class MBViewTrigger extends MBTrigger {
   /// @returns If theis trigger has changed or not.
   bool screenViewed(MBAutomationView view) {
     if (view.view == this.view) {
-      this.numberOfTimes = (this.numberOfTimes ?? 0) + 1;
+      numberOfTimes = (numberOfTimes ?? 0) + 1;
       return true;
     }
     return false;
