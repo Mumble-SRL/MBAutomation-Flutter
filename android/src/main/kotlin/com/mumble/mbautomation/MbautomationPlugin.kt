@@ -36,8 +36,8 @@ class MbautomationPlugin : ActivityAware, FlutterPlugin, PluginRegistry.NewInten
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
-            "showNotification" -> Utils.scheduleNotification(applicationContext!!, call.arguments as Map<String, Any>)
-            "cancelNotification" -> cancelNotification((call.arguments as Map<String, Any>)["id"] as Int)
+            "showNotification" -> Utils.scheduleNotification(applicationContext!!, call.arguments as Map<String, Any>, result)
+            "cancelNotification" -> cancelNotification((call.arguments as Map<String, Any>)["id"] as Int, result)
             else -> result.notImplemented()
         }
     }
@@ -75,8 +75,9 @@ class MbautomationPlugin : ActivityAware, FlutterPlugin, PluginRegistry.NewInten
         channel.setMethodCallHandler(null)
     }
 
-    fun cancelNotification(id: Int) {
+    fun cancelNotification(id: Int, @NonNull result: Result) {
         val nm: NotificationManager? = applicationContext!!.getSystemService(NOTIFICATION_SERVICE) as NotificationManager?
         nm?.cancel(id)
+        result.success(true)
     }
 }

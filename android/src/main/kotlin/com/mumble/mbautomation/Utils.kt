@@ -1,5 +1,6 @@
 package com.mumble.mbautomation
 
+import android.R
 import android.app.AlarmManager
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -8,12 +9,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
+import androidx.annotation.NonNull
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import io.flutter.plugin.common.MethodChannel
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
+import io.flutter.plugin.common.MethodChannel.Result
 
 class Utils {
     companion object {
@@ -42,7 +45,11 @@ class Utils {
             return false
         }
 
-        fun scheduleNotification(applicationContext: Context, map: Map<String, Any>) {
+        fun scheduleNotification(
+            applicationContext: Context,
+            map: Map<String, Any>,
+            @NonNull result: Result
+        ) {
             val id = map["id"] as Int
 
             val date: Long = if (map["date"] is Long) {
@@ -54,58 +61,80 @@ class Utils {
             val new_millis = TimeUnit.SECONDS.toMillis(date)
             val gson = Gson()
 
-            val intent = Intent(applicationContext, AlarmReceiverScheduledNotifications::class.java)
+            val intent = Intent()
+            intent.action = "LOCAL_NOTIFICATION"
             intent.putExtra("map", gson.toJson(map).toString())
+            intent.setClass(applicationContext, AlarmReceiverScheduledNotifications::class.java)
 
-            val pendingIntent = PendingIntent.getBroadcast(applicationContext, id, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-            val alarmManager = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val pendingIntent = PendingIntent.getBroadcast(
+                applicationContext,
+                id,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            val alarmManager =
+                applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.cancel(pendingIntent)
             if (Build.VERSION.SDK_INT >= 19) {
                 alarmManager.setExact(AlarmManager.RTC_WAKEUP, new_millis, pendingIntent)
             } else {
                 alarmManager.set(AlarmManager.RTC_WAKEUP, new_millis, pendingIntent)
             }
+
+            result.success(true)
         }
 
         fun showNotification(applicationContext: Context, map: Map<String, Any>) {
             val gson = Gson()
             val title = map["title"] as String?
             val body = map["body"] as String?
-            val launchImage = map["launchImage"] as String?
-            val sound = map["sound"] as String?
             val media = map["media"] as String?
-            val mediaType = map["mediaType"] as String?
             val channelId = map["channelId"] as String
             val icon = map["icon"] as String
 
             var iconResource = getDrawableResourceId(applicationContext, icon)
 
             val notificationID = Random.nextInt()
-            val mNotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val mNotificationManager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             val intent = getLauncherActivity(applicationContext)
             intent?.action = MbautomationPlugin.ACTION_CLICKED_NOTIFICATION
             intent?.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent?.putExtra("map", gson.toJson(map))
 
-            val contentIntent = PendingIntent.getActivity(applicationContext, notificationID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val contentIntent = PendingIntent.getActivity(
+                applicationContext,
+                notificationID,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+            )
+
             val notificationBuilder = NotificationCompat.Builder(applicationContext, channelId)
 
             notificationBuilder.setContentTitle(title)
-                    .setAutoCancel(true)
-                    .setContentText(body)
-                    .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setContentText(body)
+                .setContentIntent(contentIntent)
+
+            if (Build.VERSION.SDK_INT >= 26) {
+                notificationBuilder.setPriority(NotificationCompat.PRIORITY_MAX)
+            }
 
             notificationBuilder.setSmallIcon(iconResource)
 
             if (media != null) {
                 val bitmap = getBitmapFromPath(media)
                 if (bitmap != null) {
-                    notificationBuilder.setStyle(NotificationCompat.BigPictureStyle()
+                    notificationBuilder.setStyle(
+                        NotificationCompat.BigPictureStyle()
                             .setSummaryText(body)
-                            .bigPicture(bitmap))
+                            .bigPicture(bitmap)
+                    )
                 } else {
-                    notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(body))
+                    notificationBuilder.setStyle(
+                        NotificationCompat.BigTextStyle().bigText(body)
+                    )
                 }
             } else {
                 notificationBuilder.setStyle(NotificationCompat.BigTextStyle().bigText(body))

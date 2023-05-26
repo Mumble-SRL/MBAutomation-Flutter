@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/mbautomation.iml" filepath="$PROJECT_DIR$/.idea/modules/mbautomation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mbautomation.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/mbautomation.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mbautomation.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mbautomation.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mbautomation.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/mbautomation.unitTest.iml" />
     </modules>
   </component>
 </project>
