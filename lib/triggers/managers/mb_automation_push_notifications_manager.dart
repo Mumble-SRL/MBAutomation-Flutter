@@ -38,6 +38,7 @@ class MBAutomationPushNotificationsManager {
       MBMessage message) async {
     String identifier = _notificationIdentifierForMessage(message);
     await MBAutomationFlutterPlugin.cancelLocalNotification(id: identifier);
+    await _unsetMessageShowDate(message);
     await _unsetMessageShowed(message);
   }
 
@@ -69,6 +70,15 @@ class MBAutomationPushNotificationsManager {
 
     DateTime date = DateTime.now();
     if (message.sendAfterDays != 0) {
+      // If we have already a notification in the future don't schedule a new notification
+      DateTime? notificationDate = await _messageShowDate(message);
+      if (notificationDate != null) {
+        bool dateHasPassed = notificationDate.isBefore(DateTime.now());
+        if (!dateHasPassed) {
+          return;
+        }
+      }
+
       date = date.add(Duration(days: message.sendAfterDays));
     }
 
@@ -84,6 +94,7 @@ class MBAutomationPushNotificationsManager {
       mediaType: mediaType,
     );
     if (result) {
+      await _setMessageShowDate(message, date);
       await _setMessageShowed(message);
     }
   }
@@ -129,7 +140,9 @@ class MBAutomationPushNotificationsManager {
           Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
     int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
-    return messageShowCount <= message.repeatTimes;
+    // At least show once
+    int repeatTimes = max(message.repeatTimes, 1);
+    return messageShowCount < repeatTimes;
   }
 
   /// Set a message as showed.
@@ -162,7 +175,61 @@ class MBAutomationPushNotificationsManager {
     await prefs.setString(_showedMessagesKey, json.encode(showedMessagesCount));
   }
 
+  // Sets the date of a notification, when it will be sent, used when sendAfterDays
+  // has a value to not override
+  static Future<void> _setMessageShowDate(
+    MBMessage message,
+    DateTime date,
+  ) async {
+    Map<String, dynamic> showedMessagesDates = await _showedMessageDates();
+    int? messageDateInt = showedMessagesDates[message.id.toString()];
+    if (messageDateInt == null) {
+      showedMessagesDates[message.id.toString()] = date.millisecondsSinceEpoch;
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _showedMessagesDatesKey,
+      json.encode(showedMessagesDates),
+    );
+  }
+
+  static Future<void> _unsetMessageShowDate(MBMessage message) async {
+    Map<String, dynamic> showedMessagesDates = await _showedMessageDates();
+    if (showedMessagesDates[message.id.toString()] != null) {
+      showedMessagesDates.remove(message.id.toString());
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _showedMessagesDatesKey,
+      json.encode(showedMessagesDates),
+    );
+  }
+
+  static Future<DateTime?> _messageShowDate(MBMessage message) async {
+    Map<String, dynamic> showedMessagesDates = await _showedMessageDates();
+    int? messageDateInt = showedMessagesDates[message.id.toString()];
+    if (messageDateInt != null) {
+      return DateTime.fromMillisecondsSinceEpoch(messageDateInt);
+    } else {
+      return null;
+    }
+  }
+
+  static Future<Map<String, dynamic>> _showedMessageDates() async {
+    Map<String, dynamic> showedMessagesDates = {};
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? showedMessagesString = prefs.getString(_showedMessagesDatesKey);
+    if (showedMessagesString != null) {
+      showedMessagesDates =
+          Map<String, dynamic>.from(json.decode(showedMessagesString));
+    }
+    return showedMessagesDates;
+  }
+
   /// The key used to save showed messages in shared preferences.
   static String get _showedMessagesKey =>
       'com.mumble.mburger.automation.pushMessages.showedMessages.count';
+
+  static String get _showedMessagesDatesKey =>
+      'com.mumble.mburger.automation.pushMessages.showedMessages.dates';
 }

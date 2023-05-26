@@ -1,3 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.mumble.mbautomation">
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <application>
+        <receiver android:exported="true" android:name="com.mumble.mbautomation.AlarmReceiverScheduledNotifications" />
+    </application>
 </manifest>
