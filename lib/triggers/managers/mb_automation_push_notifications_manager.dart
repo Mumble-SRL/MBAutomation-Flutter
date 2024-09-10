@@ -155,7 +155,7 @@ class MBAutomationPushNotificationsManager {
       showedMessagesCount =
           Map<String, dynamic>.from(json.decode(showedMessagesString));
     }
-    int messageShowCount = showedMessagesCount[message.id] ?? 0;
+    int messageShowCount = showedMessagesCount[message.id.toString()] ?? 0;
     showedMessagesCount[message.id.toString()] = messageShowCount + 1;
     await prefs.setString(_showedMessagesKey, json.encode(showedMessagesCount));
   }

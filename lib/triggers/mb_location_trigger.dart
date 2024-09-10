@@ -24,14 +24,13 @@ class MBLocationTrigger extends MBTrigger {
 
   /// Initializes a location trigger with the data provided.
   MBLocationTrigger({
-    required String id,
+    required super.id,
     required this.address,
     required this.latitude,
     required this.longitude,
     required this.radius,
     required this.afterDays,
   }) : super(
-          id: id,
           triggerType: MBTriggerType.location,
         );
 
@@ -196,5 +195,4 @@ class MBLocationTrigger extends MBTrigger {
   }
 
 //endregion
-
 }

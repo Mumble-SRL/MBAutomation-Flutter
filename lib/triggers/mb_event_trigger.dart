@@ -21,12 +21,11 @@ class MBEventTrigger extends MBTrigger {
 
   /// Initializes an event trigger with the data provided.
   MBEventTrigger({
-    required String id,
+    required super.id,
     required this.event,
     required this.times,
     this.metadata,
   }) : super(
-          id: id,
           triggerType: MBTriggerType.event,
         );
 
@@ -163,5 +162,4 @@ class MBEventTrigger extends MBTrigger {
   }
 
 //endregion
-
 }
