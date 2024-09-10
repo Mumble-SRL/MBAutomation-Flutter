@@ -20,12 +20,11 @@ class MBViewTrigger extends MBTrigger {
 
   /// Initializes a view trigger with the data provided.
   MBViewTrigger({
-    required String id,
+    required super.id,
     required this.view,
     required this.times,
     required this.secondsOnView,
   }) : super(
-          id: id,
           triggerType: MBTriggerType.view,
         );
 
@@ -143,5 +142,4 @@ class MBViewTrigger extends MBTrigger {
   }
 
 //endregion
-
 }

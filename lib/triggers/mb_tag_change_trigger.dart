@@ -38,12 +38,11 @@ class MBTagChangeTrigger extends MBTrigger {
 
   /// Initializes a tag change trigger with the data provided.
   MBTagChangeTrigger({
-    required String id,
+    required super.id,
     required this.tag,
     required this.value,
     required this.tagChangeOperator,
   }) : super(
-          id: id,
           triggerType: MBTriggerType.tagChange,
         );
 
@@ -182,5 +181,4 @@ class MBTagChangeTrigger extends MBTrigger {
   }
 
 //endregion
-
 }

@@ -8,10 +8,9 @@ class MBInactiveUserTrigger extends MBTrigger {
 
   /// Initializes an inactive user trigger with the data provided.
   MBInactiveUserTrigger({
-    required String id,
+    required super.id,
     required this.days,
   }) : super(
-          id: id,
           triggerType: MBTriggerType.inactiveUser,
         );
 

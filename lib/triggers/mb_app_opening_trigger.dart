@@ -8,10 +8,9 @@ class MBAppOpeningTrigger extends MBTrigger {
 
   /// Initializes an app opening trigger with the data provided.
   MBAppOpeningTrigger({
-    required String id,
+    required super.id,
     required this.times,
   }) : super(
-          id: id,
           triggerType: MBTriggerType.appOpening,
         );
 
