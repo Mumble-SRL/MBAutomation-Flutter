@@ -1,6 +1,6 @@
 name: mbautomation
 description: MBAutomation plugin for MBurger that lets you present push and in app messages based on the behavior of the user.
-version: 2.1.2+1
+version: 2.1.3
 homepage: https://web.mburger.cloud/engagement-platform
 repository: https://github.com/Mumble-SRL/MBAutomation-Flutter
 
@@ -11,20 +11,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  collection: ^1.18.0
-  http: ^1.2.2
-  mburger: ^2.1.3+1
-  mbmessages: ^2.1.3+3
-  mbaudience: ^2.1.2+1
-  path: ^1.9.0
-  path_provider: ^2.1.4
-  shared_preferences: ^2.3.2
-  sqflite: ^2.4.0
+  collection: ^1.19.1
+  http: ^1.4.0
+  mburger: ^2.1.4
+  mbmessages: ^2.1.4
+  mbaudience: ^2.1.3
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  shared_preferences: ^2.5.3
+  sqflite: ^2.4.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   plugin:

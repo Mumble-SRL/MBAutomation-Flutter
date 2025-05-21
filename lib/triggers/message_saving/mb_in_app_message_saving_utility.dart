@@ -19,19 +19,19 @@ class MBInAppMessageSavingUtility {
       dictionary['title'] = inAppMessage.title;
     }
     if (inAppMessage.titleColor != null) {
-      dictionary['titleColor'] = inAppMessage.titleColor!.value;
+      dictionary['titleColor'] = inAppMessage.titleColor!.toARGB32();
     }
     if (inAppMessage.body != null) {
       dictionary['body'] = inAppMessage.body;
     }
     if (inAppMessage.bodyColor != null) {
-      dictionary['bodyColor'] = inAppMessage.bodyColor!.value;
+      dictionary['bodyColor'] = inAppMessage.bodyColor!.toARGB32();
     }
     if (inAppMessage.image != null) {
       dictionary['image'] = inAppMessage.image;
     }
     if (inAppMessage.backgroundColor != null) {
-      dictionary['backgroundColor'] = inAppMessage.backgroundColor!.value;
+      dictionary['backgroundColor'] = inAppMessage.backgroundColor!.toARGB32();
     }
     if (inAppMessage.buttons != null) {
       dictionary['buttons'] = inAppMessage.buttons!
@@ -134,10 +134,10 @@ class MBInAppMessageSavingUtility {
       'linkType': _stringForLinkType(button.linkType),
     };
     if (button.titleColor != null) {
-      dictionary['titleColor'] = button.titleColor!.value;
+      dictionary['titleColor'] = button.titleColor!.toARGB32();
     }
     if (button.backgroundColor != null) {
-      dictionary['backgroundColor'] = button.backgroundColor!.value;
+      dictionary['backgroundColor'] = button.backgroundColor!.toARGB32();
     }
     if (button.sectionId != null) {
       dictionary['sectionId'] = button.sectionId;
