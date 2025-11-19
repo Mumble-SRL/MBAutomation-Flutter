@@ -27,7 +27,7 @@ You can install the MBAudience SDK using pub, add this to your pubspec.yaml file
 
 ``` yaml
 dependencies:
-  mbautomation: ^2.0.0
+  mbautomation: ^2.1.6
 ```
 
 And then install packages from the command line with:

@@ -117,7 +117,12 @@ class MBLocationTrigger extends MBTrigger {
   /// @param lat2 Latitude for the second location.
   /// @param lon2 Longitude for the second location.
   /// @returns The distance between locations, in meters.
-  double _calculateDistance(lat1, lon1, lat2, lon2) {
+  double _calculateDistance(
+    double lat1,
+    double lon1,
+    double lat2,
+    double lon2,
+  ) {
     var p = 0.017453292519943295;
     var c = cos;
     var a = 0.5 -

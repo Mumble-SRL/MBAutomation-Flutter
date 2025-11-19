@@ -98,7 +98,7 @@ class MBAutomationMessagesManager {
 //region timer
   /// Starts the timer to check periodically messages.
   /// @param time The time interval in seconds.
-  static startMessageTimer({required int time}) {
+  static void startMessageTimer({required int time}) {
     timer = Timer.periodic(
       Duration(seconds: time),
       (timer) => checkMessages(fromStartup: false),
@@ -107,7 +107,7 @@ class MBAutomationMessagesManager {
 
   /// Restarts the timer with a new time.
   /// @param time The time interval in seconds.
-  static messageTimerChanged({required int time}) {
+  static void messageTimerChanged({required int time}) {
     if (timer != null) {
       timer?.cancel();
       timer = null;
@@ -123,7 +123,7 @@ class MBAutomationMessagesManager {
   /// Function called when an event happens.
   /// It checks the saved messages and tells all the `MBEventTrigger` triggers that this event happened.
   /// @param event The event that happened.
-  static eventHappened(MBAutomationEvent event) async {
+  static Future<void> eventHappened(MBAutomationEvent event) async {
     List<MBMessage>? messagesSaved = await savedMessages();
     if (messagesSaved == null) {
       return;
@@ -490,7 +490,6 @@ class MBAutomationMessagesManager {
   }
 
 //endregion
-
 }
 
 class _Location {

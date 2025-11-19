@@ -69,7 +69,7 @@ class MBAutomationFlutterPlugin {
   static bool _methodCallInitialized = false;
 
   /// Initializes method calls from native to dart.
-  static initializeMethodCall() {
+  static void initializeMethodCall() {
     if (!_methodCallInitialized) {
       _methodCallInitialized = true;
       _channel.setMethodCallHandler(_mbAutomationHandler);
