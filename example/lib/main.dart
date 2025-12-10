@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
-    MBManager.shared.apiToken = 'YOUR_API_TOKEN';
+    MBManager.shared.apiToken = 'd56411e2ffcc547cd11de4bea08aff46b2a201ce';
     MBManager.shared.plugins = [
       MBAutomation(),
       MBAudience(),
@@ -36,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _configurePushNotifications() async {
-    MBMessages.pushToken = 'YOUR_PUSH_API_KEY';
+    MBMessages.pushToken = '9YHhlIGODXiizB6bPBreWnAWIGJLa0sqPLSfpDiJ';
     MBMessages.onToken = (token) async {
       debugPrint("Token received $token");
       await MBMessages.registerDevice(token).catchError(
